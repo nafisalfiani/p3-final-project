@@ -85,12 +85,12 @@ func (u *user) Get(ctx context.Context, req entity.User) (entity.User, error) {
 	// get from cache, if no error and user found, direct return
 	user, err := u.getCache(ctx, fmt.Sprintf(entity.RedisKeyUser, redisKey))
 	if err == nil && !user.Id.IsZero() {
-		u.logger.Info(ctx, fmt.Sprintf("cache for user:%v found", req.Id.Hex()))
+		u.logger.Info(ctx, fmt.Sprintf("cache for %v found", redisKey))
 		return user, nil
 	} else if err != nil {
 		u.logger.Error(ctx, err)
 	}
-	u.logger.Info(ctx, fmt.Sprintf("cache for user:%v not found", req.Id.Hex()))
+	u.logger.Info(ctx, fmt.Sprintf("cache for %v no found", redisKey))
 
 	if err := u.collection.FindOne(ctx, filter).Decode(&user); err != nil && err == mongo.ErrNoDocuments {
 		return user, errors.NewWithCode(codes.CodeNoSQLRecordDoesNotExist, err.Error())

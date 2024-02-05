@@ -40,7 +40,7 @@ func Init(logger log.Interface, json parser.JSONInterface, db *mongo.Collection,
 
 func (r *role) List(ctx context.Context) ([]entity.Role, error) {
 	roles := []entity.Role{}
-	cursor, err := r.collection.Find(ctx, nil)
+	cursor, err := r.collection.Find(ctx, bson.M{})
 	if err != nil {
 		return roles, errors.NewWithCode(codes.CodeNoSQLRead, err.Error())
 	}
@@ -62,7 +62,7 @@ func (r *role) Get(ctx context.Context, role entity.Role) (entity.Role, error) {
 		filter = bson.M{"code": role.Code}
 		redisKey = fmt.Sprintf("code:%v", role.Code)
 	case !role.Id.IsZero():
-		filter = bson.M{"id": role.Id}
+		filter = bson.M{"_id": role.Id}
 		redisKey = fmt.Sprintf("id:%v", role.Id.Hex())
 	}
 

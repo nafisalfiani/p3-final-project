@@ -46,9 +46,15 @@ func (u *userGrpcServer) GetUser(ctx context.Context, req *User) (*User, error) 
 	}
 
 	res := &User{
-		Id:    user.Id.Hex(),
-		Name:  user.Name,
-		Email: user.Email,
+		Id:        user.Id.Hex(),
+		Name:      user.Name,
+		Email:     user.Email,
+		Username:  user.Username,
+		Password:  user.Password,
+		CreatedAt: timestamppb.New(user.CreatedAt),
+		CreatedBy: user.CreatedBy,
+		UpdatedAt: timestamppb.New(user.UpdatedAt),
+		UpdatedBy: user.UpdatedBy,
 	}
 
 	return res, nil
@@ -91,9 +97,15 @@ func (u *userGrpcServer) UpdateUser(ctx context.Context, req *User) (*User, erro
 	u.log.Debug(ctx, user)
 
 	res := &User{
-		Id:    user.Id.Hex(),
-		Name:  user.Name,
-		Email: user.Email,
+		Id:        user.Id.Hex(),
+		Name:      user.Name,
+		Email:     user.Email,
+		Username:  user.Username,
+		Password:  user.Password,
+		CreatedAt: timestamppb.New(user.CreatedAt),
+		CreatedBy: user.CreatedBy,
+		UpdatedAt: timestamppb.New(user.UpdatedAt),
+		UpdatedBy: user.UpdatedBy,
 	}
 
 	return res, nil
@@ -123,9 +135,15 @@ func (u *userGrpcServer) GetUsers(ctx context.Context, in *emptypb.Empty) (*User
 	res := &UserList{}
 	for i := range users {
 		res.Users = append(res.Users, &User{
-			Id:    users[i].Id.Hex(),
-			Name:  users[i].Name,
-			Email: users[i].Email,
+			Id:        users[i].Id.Hex(),
+			Name:      users[i].Name,
+			Email:     users[i].Email,
+			Username:  users[i].Username,
+			Password:  users[i].Password,
+			CreatedAt: timestamppb.New(users[i].CreatedAt),
+			CreatedBy: users[i].CreatedBy,
+			UpdatedAt: timestamppb.New(users[i].UpdatedAt),
+			UpdatedBy: users[i].UpdatedBy,
 		})
 	}
 

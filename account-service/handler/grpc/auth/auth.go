@@ -42,9 +42,10 @@ func (a *grpcAuth) Register(ctx context.Context, in *RegisterRequest) (*Register
 		return nil, err
 	}
 
-	// get default role
+	// get member role
 	role, err := a.role.Get(ctx, entity.Role{Code: "member"})
 	if err != nil {
+		a.log.Error(ctx, err)
 		return nil, err
 	}
 
@@ -61,6 +62,7 @@ func (a *grpcAuth) Register(ctx context.Context, in *RegisterRequest) (*Register
 	}
 	newUser, err := a.user.Create(ctx, createReq)
 	if err != nil {
+		a.log.Error(ctx, err)
 		return nil, err
 	}
 
@@ -79,6 +81,7 @@ func (a *grpcAuth) Login(ctx context.Context, in *LoginRequest) (*LoginResponse,
 		Username: in.GetUsername(),
 	})
 	if err != nil {
+		a.log.Error(ctx, err)
 		return nil, err
 	}
 
@@ -92,15 +95,14 @@ func (a *grpcAuth) Login(ctx context.Context, in *LoginRequest) (*LoginResponse,
 
 	token, err := a.auth.CreateToken(ctx, user.ToAuthUser())
 	if err != nil {
+		a.log.Error(ctx, err)
 		return nil, err
 	}
 
 	res := &LoginResponse{
-		TokenType:        token.TokenType,
-		AccessToken:      token.AccessToken,
-		AccessExpiresIn:  token.AccessExpiresIn,
-		RefreshToken:     token.RefreshToken,
-		RefreshExpiresIn: token.RefreshExpiresIn,
+		TokenType:       token.TokenType,
+		AccessToken:     token.AccessToken,
+		AccessExpiresIn: token.AccessExpiresIn,
 	}
 
 	return res, nil
@@ -114,6 +116,7 @@ func (a *grpcAuth) CreateRole(ctx context.Context, req *Role) (*Role, error) {
 
 	role, err := a.role.Create(ctx, roleReq)
 	if err != nil {
+		a.log.Error(ctx, err)
 		return nil, err
 	}
 
@@ -129,6 +132,7 @@ func (a *grpcAuth) CreateRole(ctx context.Context, req *Role) (*Role, error) {
 func (a *grpcAuth) ListRole(ctx context.Context, in *emptypb.Empty) (*RoleList, error) {
 	roles, err := a.role.List(ctx)
 	if err != nil {
+		a.log.Error(ctx, err)
 		return nil, err
 	}
 
