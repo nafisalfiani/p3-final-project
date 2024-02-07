@@ -1,0 +1,184 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/ping": {
+            "get": {
+                "description": "This endpoint will hit the server",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Server"
+                ],
+                "summary": "Health Check",
+                "responses": {
+                    "200": {
+                        "description": "PONG!",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/scheduler/trigger": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "XDateTimes": []
+                    }
+                ],
+                "description": "Trigger Scheduler",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Scheduler"
+                ],
+                "summary": "Trigger Scheduler",
+                "parameters": [
+                    {
+                        "description": "Parameter for triggering scheduler",
+                        "name": "trigger_input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.TriggerSchedulerParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.HTTPResp"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/entity.HTTPResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.HTTPResp"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entity.HTTPMessage": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.HTTPResp": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "$ref": "#/definitions/entity.HTTPMessage"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Meta"
+                },
+                "pagination": {
+                    "$ref": "#/definitions/entity.Pagination"
+                }
+            }
+        },
+        "entity.Meta": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "$ref": "#/definitions/entity.MetaError"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "request_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
+                },
+                "time_elapsed": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.MetaError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Pagination": {
+            "type": "object",
+            "properties": {
+                "current_elements": {
+                    "type": "integer"
+                },
+                "current_page": {
+                    "type": "integer"
+                },
+                "cursor_end": {
+                    "type": "string"
+                },
+                "cursor_start": {
+                    "type": "string"
+                },
+                "sort_by": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "total_elements": {
+                    "type": "integer"
+                },
+                "total_pages": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.TriggerSchedulerParams": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

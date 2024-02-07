@@ -1,0 +1,116 @@
+definitions:
+  entity.HTTPMessage:
+    properties:
+      body:
+        type: string
+      title:
+        type: string
+    type: object
+  entity.HTTPResp:
+    properties:
+      data: {}
+      message:
+        $ref: '#/definitions/entity.HTTPMessage'
+      metadata:
+        $ref: '#/definitions/entity.Meta'
+      pagination:
+        $ref: '#/definitions/entity.Pagination'
+    type: object
+  entity.Meta:
+    properties:
+      error:
+        $ref: '#/definitions/entity.MetaError'
+      message:
+        type: string
+      path:
+        type: string
+      request_id:
+        type: string
+      status:
+        type: string
+      status_code:
+        type: integer
+      time_elapsed:
+        type: string
+      timestamp:
+        type: string
+    type: object
+  entity.MetaError:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  entity.Pagination:
+    properties:
+      current_elements:
+        type: integer
+      current_page:
+        type: integer
+      cursor_end:
+        type: string
+      cursor_start:
+        type: string
+      sort_by:
+        items:
+          type: string
+        type: array
+      total_elements:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  entity.TriggerSchedulerParams:
+    properties:
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/ping:
+    get:
+      description: This endpoint will hit the server
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: PONG!
+          schema:
+            type: string
+      summary: Health Check
+      tags:
+      - Server
+  /api/v1/admin/scheduler/trigger:
+    post:
+      description: Trigger Scheduler
+      parameters:
+      - description: Parameter for triggering scheduler
+        in: body
+        name: trigger_input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.TriggerSchedulerParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      - XDateTimes: []
+      summary: Trigger Scheduler
+      tags:
+      - Scheduler
+swagger: "2.0"
