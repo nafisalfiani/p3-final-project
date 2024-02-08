@@ -68,11 +68,6 @@ const docTemplate = `{
         },
         "/auth/v1/login": {
             "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "This endpoint will sign in user with username and password",
                 "produces": [
                     "application/json"
@@ -105,8 +100,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.HTTPResp"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/entity.HTTPResp"
                         }
@@ -116,11 +111,6 @@ const docTemplate = `{
         },
         "/auth/v1/register": {
             "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "This endpoint will register new user as member",
                 "produces": [
                     "application/json"
@@ -153,8 +143,49 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.HTTPResp"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.HTTPResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/v1/verify-email/{id}": {
+            "post": {
+                "description": "This endpoint will mark user email as verified",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verify user email",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.HTTPResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.HTTPResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/entity.HTTPResp"
                         }

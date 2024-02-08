@@ -72,10 +72,10 @@ func SetUserId(ctx context.Context, uId string) context.Context {
 	return context.WithValue(ctx, userId, uId)
 }
 
-func GetUserId(ctx context.Context) int {
-	ui, ok := ctx.Value(userId).(int)
+func GetUserId(ctx context.Context) string {
+	ui, ok := ctx.Value(userId).(string)
 	if !ok {
-		return 0
+		return ""
 	}
 	return ui
 }

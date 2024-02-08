@@ -16,6 +16,7 @@ import (
 	"github.com/nafisalfiani/p3-final-project/api-gateway-service/usecase"
 	"github.com/nafisalfiani/p3-final-project/lib/appcontext"
 	"github.com/nafisalfiani/p3-final-project/lib/auth"
+	"github.com/nafisalfiani/p3-final-project/lib/configreader"
 	"github.com/nafisalfiani/p3-final-project/lib/log"
 	"github.com/nafisalfiani/p3-final-project/lib/parser"
 	swaggerfiles "github.com/swaggo/files"
@@ -35,16 +36,17 @@ type REST interface {
 }
 
 type rest struct {
-	http      *gin.Engine
-	conf      Config
-	log       log.Interface
-	json      parser.JSONInterface
-	auth      auth.Interface
-	uc        *usecase.Usecases
-	scheduler scheduler.Interface
+	http       *gin.Engine
+	conf       Config
+	confreader configreader.Interface
+	log        log.Interface
+	json       parser.JSONInterface
+	auth       auth.Interface
+	uc         *usecase.Usecases
+	scheduler  scheduler.Interface
 }
 
-func Init(conf Config, log log.Interface, json parser.JSONInterface, auth auth.Interface, uc *usecase.Usecases, scheduler scheduler.Interface) REST {
+func Init(conf Config, confreader configreader.Interface, log log.Interface, json parser.JSONInterface, auth auth.Interface, uc *usecase.Usecases, scheduler scheduler.Interface) REST {
 	r := &rest{}
 	once.Do(func() {
 		switch conf.Mode {
@@ -59,13 +61,14 @@ func Init(conf Config, log log.Interface, json parser.JSONInterface, auth auth.I
 		ginEngine := gin.New()
 
 		r = &rest{
-			conf:      conf,
-			log:       log,
-			auth:      auth,
-			json:      json,
-			http:      ginEngine,
-			uc:        uc,
-			scheduler: scheduler,
+			conf:       conf,
+			confreader: confreader,
+			log:        log,
+			auth:       auth,
+			json:       json,
+			http:       ginEngine,
+			uc:         uc,
+			scheduler:  scheduler,
 		}
 
 		// Set CORS
@@ -153,6 +156,7 @@ func (r *rest) Register() {
 	// auth api
 	authv1 := r.http.Group("/auth/v1", commonPublicMiddlewares...)
 	authv1.POST("/register", r.RegisterUser)
+	authv1.GET("/verify-email/:id", r.VerifyEmail)
 	authv1.POST("/login", r.Login)
 
 	commonPrivateMiddlewares := append(commonPublicMiddlewares, r.VerifyUser)
@@ -204,13 +208,13 @@ func (r *rest) registerPlatformRoutes() {
 func (r *rest) platformConfig(ctx *gin.Context) {
 	switch ctx.Query("output") {
 	case "yaml":
-		c, err := yaml.Marshal(r.conf)
+		c, err := yaml.Marshal(r.confreader.AllSettings())
 		if err != nil {
 			r.httpRespError(ctx, err)
 			return
 		}
 		ctx.String(http.StatusOK, string(c))
 	default:
-		ctx.IndentedJSON(http.StatusOK, r.conf)
+		ctx.IndentedJSON(http.StatusOK, r.confreader.AllSettings())
 	}
 }

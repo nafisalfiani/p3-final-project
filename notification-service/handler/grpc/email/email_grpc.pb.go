@@ -19,8 +19,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EmailServiceClient interface {
-	SendRegistrationMail(ctx context.Context, in *Email, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	SendInvoiceMail(ctx context.Context, in *Email, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	SendRegistrationMail(ctx context.Context, in *User, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	SendTransactionMail(ctx context.Context, in *Email, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type emailServiceClient struct {
@@ -31,7 +31,7 @@ func NewEmailServiceClient(cc grpc.ClientConnInterface) EmailServiceClient {
 	return &emailServiceClient{cc}
 }
 
-func (c *emailServiceClient) SendRegistrationMail(ctx context.Context, in *Email, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *emailServiceClient) SendRegistrationMail(ctx context.Context, in *User, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/email.EmailService/SendRegistrationMail", in, out, opts...)
 	if err != nil {
@@ -40,9 +40,9 @@ func (c *emailServiceClient) SendRegistrationMail(ctx context.Context, in *Email
 	return out, nil
 }
 
-func (c *emailServiceClient) SendInvoiceMail(ctx context.Context, in *Email, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *emailServiceClient) SendTransactionMail(ctx context.Context, in *Email, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/email.EmailService/SendInvoiceMail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/email.EmailService/SendTransactionMail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -53,8 +53,8 @@ func (c *emailServiceClient) SendInvoiceMail(ctx context.Context, in *Email, opt
 // All implementations must embed UnimplementedEmailServiceServer
 // for forward compatibility
 type EmailServiceServer interface {
-	SendRegistrationMail(context.Context, *Email) (*emptypb.Empty, error)
-	SendInvoiceMail(context.Context, *Email) (*emptypb.Empty, error)
+	SendRegistrationMail(context.Context, *User) (*emptypb.Empty, error)
+	SendTransactionMail(context.Context, *Email) (*emptypb.Empty, error)
 	mustEmbedUnimplementedEmailServiceServer()
 }
 
@@ -62,11 +62,11 @@ type EmailServiceServer interface {
 type UnimplementedEmailServiceServer struct {
 }
 
-func (UnimplementedEmailServiceServer) SendRegistrationMail(context.Context, *Email) (*emptypb.Empty, error) {
+func (UnimplementedEmailServiceServer) SendRegistrationMail(context.Context, *User) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendRegistrationMail not implemented")
 }
-func (UnimplementedEmailServiceServer) SendInvoiceMail(context.Context, *Email) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendInvoiceMail not implemented")
+func (UnimplementedEmailServiceServer) SendTransactionMail(context.Context, *Email) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendTransactionMail not implemented")
 }
 func (UnimplementedEmailServiceServer) mustEmbedUnimplementedEmailServiceServer() {}
 
@@ -82,7 +82,7 @@ func RegisterEmailServiceServer(s grpc.ServiceRegistrar, srv EmailServiceServer)
 }
 
 func _EmailService_SendRegistrationMail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Email)
+	in := new(User)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -94,25 +94,25 @@ func _EmailService_SendRegistrationMail_Handler(srv interface{}, ctx context.Con
 		FullMethod: "/email.EmailService/SendRegistrationMail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EmailServiceServer).SendRegistrationMail(ctx, req.(*Email))
+		return srv.(EmailServiceServer).SendRegistrationMail(ctx, req.(*User))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _EmailService_SendInvoiceMail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _EmailService_SendTransactionMail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Email)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(EmailServiceServer).SendInvoiceMail(ctx, in)
+		return srv.(EmailServiceServer).SendTransactionMail(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/email.EmailService/SendInvoiceMail",
+		FullMethod: "/email.EmailService/SendTransactionMail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EmailServiceServer).SendInvoiceMail(ctx, req.(*Email))
+		return srv.(EmailServiceServer).SendTransactionMail(ctx, req.(*Email))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -129,8 +129,8 @@ var EmailService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _EmailService_SendRegistrationMail_Handler,
 		},
 		{
-			MethodName: "SendInvoiceMail",
-			Handler:    _EmailService_SendInvoiceMail_Handler,
+			MethodName: "SendTransactionMail",
+			Handler:    _EmailService_SendTransactionMail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -10,11 +10,11 @@
       "secretkey": "5dge967dus^8hs6dA$bD7rH"
     },    
     "broker": {
-      "url": "amqp://localhost:5672"
+      "url": "amqps://gqqgcxcl:fMBaMbVn_hZ0WbADjA5UIOoRhi0XRczX@octopus.rmq3.cloudamqp.com/gqqgcxcl"
     },
     "rest": {
       "port": "8080",
-      "mode": "",
+      "mode": "release",
       "logrequest": "true",
       "logresponse": "true",
       "timeout": "60s",
@@ -25,7 +25,7 @@
       "meta": {
         "title": "ketson-service",
         "description": "Backend Service for Ketson",
-        "host": "localhost",
+        "host": "localhost:8080",
         "basepath": "/",
         "version": "",
         "environment": ""
@@ -35,7 +35,7 @@
         "path": "/swagger",
         "basicauth": {
           "username": "ketson",
-          "password": "ketson"
+          "password": "swagger"
         }
       },
       "platform": {
@@ -43,7 +43,7 @@
         "path": "/platform",
         "basicauth": {
           "username": "ketson",
-          "password": "ketson"
+          "password": "platform"
         }
       }
     },

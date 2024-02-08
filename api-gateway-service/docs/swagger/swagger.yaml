@@ -148,12 +148,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/entity.HTTPResp'
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/entity.HTTPResp'
-      security:
-      - BearerAuth: []
       summary: Sign In With Password
       tags:
       - Auth
@@ -178,13 +176,38 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/entity.HTTPResp'
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/entity.HTTPResp'
-      security:
-      - BearerAuth: []
       summary: Register new user
+      tags:
+      - Auth
+  /auth/v1/verify-email/{id}:
+    post:
+      description: This endpoint will mark user email as verified
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      summary: Verify user email
       tags:
       - Auth
   /ping:

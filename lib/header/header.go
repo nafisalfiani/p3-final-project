@@ -13,9 +13,10 @@ const (
 	KeyServiceName    string = "x-service-name"
 
 	// Content type. Specifying the payload in the request
-	ContentTypeJSON string = "application/json"
-	ContentTypeXML  string = "application/xml"
-	ContentTypeForm string = "application/x-www-form-urlencoded"
+	ContentTypeJSON  string = "application/json"
+	ContentTypeXML   string = "application/xml"
+	ContentTypeForm  string = "application/x-www-form-urlencoded"
+	ContentTypePlain string = "text/plain"
 
 	// Cache control
 	CacheControlNoCache string = "no-cache"

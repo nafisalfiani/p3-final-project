@@ -37,3 +37,18 @@ TODO:
 - consumer untuk kirim email verification
 - consumer yang listen ke topic wishlist
 - Blast email ke user yang terima wishlist
+
+## Message Broker
+
+https://octopus.rmq3.cloudamqp.com/#/
+
+## MongoDB
+
+mongodb+srv://ica:password1234@cluster0.odxlqrs.mongodb.net/?retryWrites=true&w=majority
+
+## PostgreSql
+
+ketson-db
+xGH5^fo/;*P#Z^[u
+
+## Redis

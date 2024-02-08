@@ -22,8 +22,8 @@ func Init(log log.Interface, mailer mailer.Interface) EmailServiceServer {
 
 func (r *grpcMail) mustEmbedUnimplementedEmailServiceServer() {}
 
-func (r *grpcMail) SendRegistrationMail(ctx context.Context, in *Email) (*emptypb.Empty, error) {
-	err := r.mailer.Send(ctx, fromProto(in))
+func (r *grpcMail) SendRegistrationMail(ctx context.Context, in *User) (*emptypb.Empty, error) {
+	err := r.mailer.SendRegistrationEmail(ctx, fromUserProto(in))
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}
@@ -31,8 +31,8 @@ func (r *grpcMail) SendRegistrationMail(ctx context.Context, in *Email) (*emptyp
 	return &emptypb.Empty{}, nil
 }
 
-func (r *grpcMail) SendInvoiceMail(ctx context.Context, in *Email) (*emptypb.Empty, error) {
-	err := r.mailer.Send(ctx, fromProto(in))
+func (r *grpcMail) SendTransactionMail(ctx context.Context, in *Email) (*emptypb.Empty, error) {
+	err := r.mailer.SendTransactionEmail(ctx)
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}

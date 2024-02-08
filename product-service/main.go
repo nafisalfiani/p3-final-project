@@ -42,9 +42,6 @@ func main() {
 	// init parser
 	parser := parser.InitParser(logger, parser.Options{})
 
-	allConf, _ := parser.JSONParser().Marshal(cfg.AllSettings())
-	log.DefaultLogger().Info(context.Background(), string(allConf))
-
 	// init validator
 	validator := validator.New(validator.WithRequiredStructEnabled())
 
@@ -61,7 +58,7 @@ func main() {
 	cache := cache.Init(config.Cache, logger)
 
 	// init broker
-	broker, err := broker.Init(config.Broker, parser.JSONParser())
+	broker, err := broker.Init(config.Broker, logger, parser.JSONParser())
 	if err != nil {
 		logger.Fatal(context.Background(), err)
 	}

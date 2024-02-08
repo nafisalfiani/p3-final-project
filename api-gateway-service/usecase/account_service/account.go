@@ -17,6 +17,7 @@ type Interface interface {
 	Close()
 	SignIn(ctx context.Context, req entity.LoginRequest) (entity.LoginResponse, error)
 	Register(ctx context.Context, req entity.RegisterRequest) (entity.RegisterResponse, error)
+	VerifyEmail(ctx context.Context, req entity.VerifyEmailRequest) (entity.RegisterResponse, error)
 }
 
 type accountSvc struct {

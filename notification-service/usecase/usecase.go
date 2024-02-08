@@ -10,8 +10,10 @@ type Usecases struct {
 	Mailer mailer.Interface
 }
 
-func Init(logger log.Interface, dom *domain.Domains) *Usecases {
+func Init(apiGwUrl string, logger log.Interface, dom *domain.Domains) *Usecases {
 	return &Usecases{
-		Mailer: mailer.Init(dom.Mailer),
+		Mailer: mailer.Init(mailer.Config{
+			ApiGatewayUrl: apiGwUrl,
+		}, dom.Mailer),
 	}
 }

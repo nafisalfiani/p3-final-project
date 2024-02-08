@@ -24,8 +24,6 @@ type Locker *redislock.Lock
 type Interface interface {
 	Get(ctx context.Context, key string) (string, error)
 	SetEX(ctx context.Context, key string, val string, expTime time.Duration) error
-	Lock(ctx context.Context, key string, expTime time.Duration) (*redislock.Lock, error)
-	LockRelease(ctx context.Context, lock *redislock.Lock) error
 	Del(ctx context.Context, key string) error
 	FlushAll(ctx context.Context) error
 	FlushAllAsync(ctx context.Context) error
@@ -57,6 +55,8 @@ type cache struct {
 }
 
 func Init(cfg Config, log log.Interface) Interface {
+	log.Info(context.Background(), "connecting to redis...")
+
 	c := &cache{
 		conf: cfg,
 		log:  log,
@@ -109,31 +109,6 @@ func (c *cache) SetEX(ctx context.Context, key string, val string, expTime time.
 	err := c.rdb.SetEx(ctx, key, val, expTime).Err()
 	if err != nil {
 		return errors.NewWithCode(codes.CodeRedisSetex, err.Error())
-	}
-
-	return nil
-}
-
-func (c *cache) Lock(ctx context.Context, key string, expTime time.Duration) (*redislock.Lock, error) {
-	// Obtain lock
-	lock, err := c.rlock.Obtain(ctx, key, expTime, nil)
-	if err == redislock.ErrNotObtained {
-		return nil, err
-	} else if err != nil {
-		return nil, errors.NewWithCode(codes.CodeFailedLock, err.Error())
-	}
-
-	return lock, nil
-}
-
-func (c *cache) LockRelease(ctx context.Context, lock *redislock.Lock) error {
-	if lock != nil {
-		err := lock.Release(ctx)
-		if err == redislock.ErrLockNotHeld {
-			return err
-		} else if err != nil {
-			return errors.NewWithCode(codes.CodeFailedReleaseLock, err.Error())
-		}
 	}
 
 	return nil

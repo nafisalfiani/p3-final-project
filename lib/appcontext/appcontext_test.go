@@ -852,17 +852,17 @@ func TestGetUserId(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want int
+		want string
 	}{
 		{
 			name: "not ok",
 			args: args{ctx: context.Background()},
-			want: 0,
+			want: "",
 		},
 		{
 			name: "ok",
-			args: args{ctx: context.WithValue(context.Background(), userId, 1)},
-			want: 1,
+			args: args{ctx: context.WithValue(context.Background(), userId, "1")},
+			want: "1",
 		},
 	}
 	for _, tt := range tests {

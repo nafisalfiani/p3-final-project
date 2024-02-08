@@ -14,6 +14,7 @@ import (
 	"github.com/nafisalfiani/p3-final-project/lib/security"
 	"github.com/nafisalfiani/p3-final-project/notification-service/config"
 	"github.com/nafisalfiani/p3-final-project/notification-service/domain"
+	"github.com/nafisalfiani/p3-final-project/notification-service/handler/consumer"
 	"github.com/nafisalfiani/p3-final-project/notification-service/handler/grpc"
 	"github.com/nafisalfiani/p3-final-project/notification-service/usecase"
 )
@@ -41,9 +42,6 @@ func main() {
 	// init parser
 	parser := parser.InitParser(logger, parser.Options{})
 
-	allConf, _ := parser.JSONParser().Marshal(cfg.AllSettings())
-	log.DefaultLogger().Info(context.Background(), string(allConf))
-
 	// init validator
 	validator := validator.New(validator.WithRequiredStructEnabled())
 
@@ -54,7 +52,7 @@ func main() {
 	mail := email.Init(config.Mail, logger)
 
 	// init broker
-	broker, err := broker.Init(config.Broker, parser.JSONParser())
+	broker, err := broker.Init(config.Broker, logger, parser.JSONParser())
 	if err != nil {
 		logger.Fatal(context.Background(), err)
 	}
@@ -67,9 +65,12 @@ func main() {
 	dom := domain.Init(logger, parser.JSONParser(), broker, mail)
 
 	// init usecase
-	uc := usecase.Init(logger, dom)
+	uc := usecase.Init(config.ApiGateway.Url, logger, dom)
 
-	// TODO: init consumer
+	// init consumer
+	consumer := consumer.Init(logger, broker, parser.JSONParser(), uc.Mailer)
+	go consumer.StartRegistrationConsumer(context.Background())
+	go consumer.StartTransactionConsumer(context.Background())
 
 	// TODO: init scheduler
 

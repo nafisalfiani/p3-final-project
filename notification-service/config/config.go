@@ -10,10 +10,15 @@ import (
 )
 
 type Application struct {
-	Auth     auth.Config
-	Log      log.Config
-	Security security.Config
-	Mail     email.Config
-	Broker   broker.Config
-	Grpc     grpc.Config
+	ApiGateway ApiGateway
+	Auth       auth.Config
+	Log        log.Config
+	Security   security.Config
+	Mail       email.Config
+	Broker     broker.Config
+	Grpc       grpc.Config
+}
+
+type ApiGateway struct {
+	Url string
 }

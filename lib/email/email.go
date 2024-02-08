@@ -24,10 +24,10 @@ type Interface interface {
 }
 
 type Config struct {
-	SMTP SMTPConfig
+	Smtp SmtpConfig
 }
 
-type SMTPConfig struct {
+type SmtpConfig struct {
 	Host      string
 	Port      int
 	Username  string
@@ -44,8 +44,8 @@ type email struct {
 }
 
 func Init(cfg Config, log log.Interface) Interface {
-	dialer := gomail.NewDialer(cfg.SMTP.Host, cfg.SMTP.Port, cfg.SMTP.Username, cfg.SMTP.Password)
-	if cfg.SMTP.TLSConfig.InsecureSkipVerify {
+	dialer := gomail.NewDialer(cfg.Smtp.Host, cfg.Smtp.Port, cfg.Smtp.Username, cfg.Smtp.Password)
+	if cfg.Smtp.TLSConfig.InsecureSkipVerify {
 		dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 	return &email{
