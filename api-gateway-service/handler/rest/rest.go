@@ -142,7 +142,7 @@ func (r *rest) Run() {
 
 func (r *rest) Register() {
 	// server health and testing purpose
-	r.http.GET("/api/ping", r.Ping)
+	r.http.GET("/ping", r.Ping)
 	r.registerSwaggerRoutes()
 	r.registerPlatformRoutes()
 
@@ -152,9 +152,8 @@ func (r *rest) Register() {
 
 	// auth api
 	authv1 := r.http.Group("/auth/v1", commonPublicMiddlewares...)
-	authv1.POST("/login", nil)         // r.SignInWithPassword
-	authv1.POST("/refresh-token", nil) // r.RefreshToken
-	authv1.POST("/revoke-token", nil)  // r.RevokeToken
+	authv1.POST("/register", r.RegisterUser)
+	authv1.POST("/login", r.Login)
 
 	commonPrivateMiddlewares := append(commonPublicMiddlewares, r.VerifyUser)
 
@@ -163,6 +162,10 @@ func (r *rest) Register() {
 
 	// account-service
 	v1.GET("/user")
+
+	// product-service
+
+	// transaction-service
 
 	// scheduler
 	v1.POST("/admin/scheduler/trigger", r.TriggerScheduler)

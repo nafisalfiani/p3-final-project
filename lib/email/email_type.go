@@ -20,17 +20,3 @@ type SendEmailParams struct {
 	Attachments []string
 	Headers     map[string]string
 }
-
-type BodyFromHTMLParams struct {
-	Filename          string
-	OverrideDirectory string
-	Data              any
-	FuncMap           map[string]any
-}
-
-type BodyFromMJMLParams struct {
-	Filename          string
-	OverrideDirectory string
-	Data              any
-	FuncMap           map[string]any
-}

@@ -16,7 +16,7 @@ type Config struct {
 	Password string
 }
 
-func Init(cfg *Config) (*gorm.DB, error) {
+func Init(cfg Config) (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable", cfg.Url, cfg.Port, cfg.User, cfg.Password, cfg.Name)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger:         logger.Default.LogMode(logger.Info),

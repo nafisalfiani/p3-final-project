@@ -24,7 +24,7 @@ type grpcAuth struct {
 	role role.Interface
 }
 
-func Init(log log.Interface, sec security.Interface, auth auth.Interface, user user.Interface, role role.Interface) *grpcAuth {
+func Init(log log.Interface, sec security.Interface, auth auth.Interface, user user.Interface, role role.Interface) AuthServiceServer {
 	return &grpcAuth{
 		log:  log,
 		sec:  sec,
@@ -34,7 +34,7 @@ func Init(log log.Interface, sec security.Interface, auth auth.Interface, user u
 	}
 }
 
-func (u *grpcAuth) mustEmbedUnimplementedAuthServiceServer() {}
+func (a *grpcAuth) mustEmbedUnimplementedAuthServiceServer() {}
 
 func (a *grpcAuth) Register(ctx context.Context, in *RegisterRequest) (*RegisterResponse, error) {
 	hashedPassword, err := a.sec.HashPassword(ctx, in.GetPassword())
@@ -71,6 +71,7 @@ func (a *grpcAuth) Register(ctx context.Context, in *RegisterRequest) (*Register
 		Name:     newUser.Name,
 		Username: newUser.Username,
 		Email:    newUser.Email,
+		Role:     newUser.Role.Code,
 	}
 
 	return res, nil

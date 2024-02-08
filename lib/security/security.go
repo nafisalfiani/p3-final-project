@@ -16,7 +16,7 @@ type Interface interface {
 }
 
 type Config struct {
-	SecretKey string `env:"SECURITY_SECRET_KEY"`
+	SecretKey string `env:"SECRET_KEY"`
 }
 
 type security struct {

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package category;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "./grpc/category";
+
+// Category definition
+message Category {
+  string id = 1;
+  string name = 2;
+}
+
+// CategoryList definition
+message CategoryList {
+  repeated Category categories = 1;
+}
+
+// CategoryService definition
+service CategoryService {
+  rpc GetCategory(Category) returns (Category);
+  rpc CreateCategory(Category) returns (Category);
+  rpc UpdateCategory(Category) returns (Category);
+  rpc DeleteCategory(Category) returns (google.protobuf.Empty);
+  rpc GetCategories(google.protobuf.Empty) returns (CategoryList);
+}

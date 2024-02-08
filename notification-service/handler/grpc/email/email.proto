@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package email;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "./grpc/email";
+
+// Email definition
+message Email {
+	string Body = 1;
+	string BodyType = 2;
+	string Subject = 3;
+	string SenderName = 4;
+	string SenderEmail = 5;
+    repeated string RecipientTo = 6;
+    repeated string RecipientCc = 7;
+    repeated string RecipientBcc = 8;
+	repeated string Attachments = 9;
+}
+
+// EmailService definition
+service EmailService {
+  rpc SendRegistrationMail(Email) returns (google.protobuf.Empty);
+  rpc SendInvoiceMail(Email) returns (google.protobuf.Empty);
+}

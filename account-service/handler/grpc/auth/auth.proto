@@ -26,6 +26,7 @@ message RegisterResponse {
     string username = 2;
     string name = 3;
     string email = 4;
+    string role = 5;
 }
 
 message LoginRequest {

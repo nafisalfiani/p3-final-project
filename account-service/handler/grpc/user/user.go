@@ -14,23 +14,23 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type userGrpcServer struct {
+type grpcUser struct {
 	log  log.Interface
 	user user.Interface
 	auth auth.Interface
 }
 
-func Init(log log.Interface, user user.Interface, auth auth.Interface, validator *validator.Validate) *userGrpcServer {
-	return &userGrpcServer{
+func Init(log log.Interface, user user.Interface, auth auth.Interface, validator *validator.Validate) UserServiceServer {
+	return &grpcUser{
 		log:  log,
 		user: user,
 		auth: auth,
 	}
 }
 
-func (u *userGrpcServer) mustEmbedUnimplementedUserServiceServer() {}
+func (u *grpcUser) mustEmbedUnimplementedUserServiceServer() {}
 
-func (u *userGrpcServer) GetUser(ctx context.Context, req *User) (*User, error) {
+func (u *grpcUser) GetUser(ctx context.Context, req *User) (*User, error) {
 	id, err := primitive.ObjectIDFromHex(req.GetId())
 	if err != nil {
 		u.log.Error(ctx, err)
@@ -60,7 +60,7 @@ func (u *userGrpcServer) GetUser(ctx context.Context, req *User) (*User, error) 
 	return res, nil
 }
 
-func (u *userGrpcServer) CreateUser(ctx context.Context, req *User) (*User, error) {
+func (u *grpcUser) CreateUser(ctx context.Context, req *User) (*User, error) {
 	newUser, err := u.user.Create(ctx, entity.User{
 		Name:  req.GetName(),
 		Email: req.GetEmail(),
@@ -78,7 +78,7 @@ func (u *userGrpcServer) CreateUser(ctx context.Context, req *User) (*User, erro
 	return res, nil
 }
 
-func (u *userGrpcServer) UpdateUser(ctx context.Context, req *User) (*User, error) {
+func (u *grpcUser) UpdateUser(ctx context.Context, req *User) (*User, error) {
 	id, err := primitive.ObjectIDFromHex(req.Id)
 	if err != nil {
 		return nil, err
@@ -111,7 +111,7 @@ func (u *userGrpcServer) UpdateUser(ctx context.Context, req *User) (*User, erro
 	return res, nil
 }
 
-func (u *userGrpcServer) DeleteUser(ctx context.Context, req *User) (*emptypb.Empty, error) {
+func (u *grpcUser) DeleteUser(ctx context.Context, req *User) (*emptypb.Empty, error) {
 	id, err := primitive.ObjectIDFromHex(req.Id)
 	if err != nil {
 		return nil, err
@@ -126,7 +126,7 @@ func (u *userGrpcServer) DeleteUser(ctx context.Context, req *User) (*emptypb.Em
 	return &emptypb.Empty{}, nil
 }
 
-func (u *userGrpcServer) GetUsers(ctx context.Context, in *emptypb.Empty) (*UserList, error) {
+func (u *grpcUser) GetUsers(ctx context.Context, in *emptypb.Empty) (*UserList, error) {
 	users, err := u.user.List(ctx)
 	if err != nil {
 		return nil, err
@@ -150,7 +150,7 @@ func (u *userGrpcServer) GetUsers(ctx context.Context, in *emptypb.Empty) (*User
 	return res, nil
 }
 
-func (u *userGrpcServer) VerifyUserEmail(ctx context.Context, in *User) (*User, error) {
+func (u *grpcUser) VerifyUserEmail(ctx context.Context, in *User) (*User, error) {
 	id, err := primitive.ObjectIDFromHex(in.Id)
 	if err != nil {
 		return nil, err

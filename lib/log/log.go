@@ -27,7 +27,7 @@ type Interface interface {
 }
 
 type Config struct {
-	Level string `env:"LOG_LEVEL"`
+	Level string `env:"LEVEL"`
 }
 
 var now = time.Now

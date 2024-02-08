@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package transaction;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./grpc/transaction";
+
+// Transaction definition
+message Transaction {
+  string id = 1;
+  string ticket_id = 2;
+  int64 ticket_count = 3;
+  string buyer_id = 4;
+  string seller_id = 5;
+  float amount = 6;
+  google.protobuf.Timestamp created_at = 7;
+  string created_by = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  string updated_by = 10;
+}
+
+// TransactionList definition
+message TransactionList {
+  repeated Transaction Transactions = 1;
+}
+
+// TransactionService definition
+service TransactionService {
+  rpc GetTransaction(Transaction) returns (Transaction);
+  rpc CreateTransaction(Transaction) returns (Transaction);
+  rpc UpdateTransaction(Transaction) returns (Transaction);
+  rpc DeleteTransaction(Transaction) returns (google.protobuf.Empty);
+  rpc GetTransactions(Transaction) returns (TransactionList);
+}

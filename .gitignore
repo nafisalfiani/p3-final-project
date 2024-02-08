@@ -8,6 +8,13 @@
 *.so
 *.dylib
 
+# App binaries
+account-service/build/
+
+# Configuration
+account-service/.env
+account-service/config.json
+
 # Test binary, built with `go test -c`
 *.test
 

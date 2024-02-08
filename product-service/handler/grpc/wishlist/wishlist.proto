@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package wishlist;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "./grpc/wishlist";
+
+// Wishlist definition
+message Wishlist {
+  string id = 1;
+  string category_name = 2;
+  string region_name = 3;
+  repeated string subscribed_users = 4;
+}
+
+// WishlistList definition
+message WishlistList {
+  repeated Wishlist Wishlists = 1;
+}
+
+// WishlistService definition
+service WishlistService {
+  rpc GetWishlist(Wishlist) returns (Wishlist);
+  rpc CreateWishlist(Wishlist) returns (Wishlist);
+  rpc UpdateWishlist(Wishlist) returns (Wishlist);
+  rpc DeleteWishlist(Wishlist) returns (google.protobuf.Empty);
+  rpc GetWishlists(Wishlist) returns (WishlistList);
+}

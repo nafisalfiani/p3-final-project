@@ -1,0 +1,78 @@
+{
+    "auth": {
+      "accesstokenkey": "1lk2e967dus^8hs6dASU@JE",
+      "accesstokenduration": "3600s"
+    },
+    "log": {
+      "level": "debug"
+    },
+    "security": {
+      "secretkey": "5dge967dus^8hs6dA$bD7rH"
+    },    
+    "broker": {
+      "url": "amqp://localhost:5672"
+    },
+    "rest": {
+      "port": "8080",
+      "mode": "",
+      "logrequest": "true",
+      "logresponse": "true",
+      "timeout": "60s",
+      "shutdowntimeout": "30s",
+      "cors": {
+        "mode": "allowall"
+      },
+      "meta": {
+        "title": "ketson-service",
+        "description": "Backend Service for Ketson",
+        "host": "localhost",
+        "basepath": "/",
+        "version": "",
+        "environment": ""
+      },
+      "swagger": {
+        "enabled": "true",
+        "path": "/swagger",
+        "basicauth": {
+          "username": "ketson",
+          "password": "ketson"
+        }
+      },
+      "platform": {
+        "enabled": "true",
+        "path": "/platform",
+        "basicauth": {
+          "username": "ketson",
+          "password": "ketson"
+        }
+      }
+    },
+    "jobs": {
+      "helloworld": {
+        "name": "HelloWorld",
+        "enabled": true,
+        "timetype": "interval",
+        "interval": "1h",
+        "scheduledtime": ""
+      }
+    },
+    "usecase": {
+      "accountconfig": {
+        "base": "localhost",
+        "port": 50051
+      },
+      "productconfig": {
+        "base": "localhost",
+        "port": 50052
+      },
+      "transactionconfig": {
+        "base": "localhost",
+        "port": 50053
+      },
+      "notificationconfig": {
+        "base": "localhost",
+        "port": 50054
+      }
+    }
+  }
+  

@@ -34,8 +34,7 @@ func TestApp_Error(t *testing.T) {
 
 func TestCompile(t *testing.T) {
 	type args struct {
-		err  error
-		lang string
+		err error
 	}
 	tests := []struct {
 		name  string
@@ -68,7 +67,7 @@ func TestCompile(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := Compile(tt.args.err, tt.args.lang)
+			got, got1 := Compile(tt.args.err)
 			if got != tt.want {
 				t.Errorf("Compile() got = %v, want %v", got, tt.want)
 			}

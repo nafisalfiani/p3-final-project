@@ -270,8 +270,8 @@ func (r *rest) BindParams(ctx *gin.Context, obj interface{}) error {
 // @Description This endpoint will hit the server
 // @Tags Server
 // @Produce json
-// @Success 200 string example="PONG!"
-// @Router /api/ping [GET]
+// @Success 200 {object} entity.Ping
+// @Router /ping [GET]
 func (r *rest) Ping(ctx *gin.Context) {
 	resp := entity.Ping{
 		Status:  "OK",

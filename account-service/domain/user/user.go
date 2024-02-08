@@ -64,33 +64,33 @@ func (u *user) List(ctx context.Context) ([]entity.User, error) {
 func (u *user) Get(ctx context.Context, req entity.User) (entity.User, error) {
 	var user entity.User
 	var filter any
-	var redisKey string
+	var cacheKey string
 
 	u.logger.Debug(ctx, req)
 	switch {
 	case req.Username != "":
 		filter = bson.M{"username": req.Username}
-		redisKey = fmt.Sprintf("username:%v", req.Username)
+		cacheKey = fmt.Sprintf("username:%v", req.Username)
 	case req.Email != "":
 		filter = bson.M{"email": req.Email}
-		redisKey = fmt.Sprintf("email:%v", req.Email)
+		cacheKey = fmt.Sprintf("email:%v", req.Email)
 	case req.Name != "":
 		filter = bson.M{"name": req.Name}
-		redisKey = fmt.Sprintf("name:%v", req.Name)
+		cacheKey = fmt.Sprintf("name:%v", req.Name)
 	case req.Id.String() != "":
 		filter = bson.M{"_id": req.Id}
-		redisKey = fmt.Sprintf("id:%v", req.Id.Hex())
+		cacheKey = fmt.Sprintf("id:%v", req.Id.Hex())
 	}
 
 	// get from cache, if no error and user found, direct return
-	user, err := u.getCache(ctx, fmt.Sprintf(entity.RedisKeyUser, redisKey))
+	user, err := u.getCache(ctx, fmt.Sprintf(entity.CacheKeyUser, cacheKey))
 	if err == nil && !user.Id.IsZero() {
-		u.logger.Info(ctx, fmt.Sprintf("cache for %v found", redisKey))
+		u.logger.Info(ctx, fmt.Sprintf("cache for %v found", cacheKey))
 		return user, nil
 	} else if err != nil {
 		u.logger.Error(ctx, err)
 	}
-	u.logger.Info(ctx, fmt.Sprintf("cache for %v no found", redisKey))
+	u.logger.Info(ctx, fmt.Sprintf("cache for %v no found", cacheKey))
 
 	if err := u.collection.FindOne(ctx, filter).Decode(&user); err != nil && err == mongo.ErrNoDocuments {
 		return user, errors.NewWithCode(codes.CodeNoSQLRecordDoesNotExist, err.Error())
@@ -99,7 +99,7 @@ func (u *user) Get(ctx context.Context, req entity.User) (entity.User, error) {
 	}
 
 	// set user cache if result found from mongo
-	if err := u.setCache(ctx, redisKey, user); err != nil {
+	if err := u.setCache(ctx, cacheKey, user); err != nil {
 		u.logger.Error(ctx, fmt.Sprintf("cache for user:%v failed to be set", req.Id.Hex()))
 	}
 

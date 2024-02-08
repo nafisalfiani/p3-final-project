@@ -22,7 +22,6 @@ const (
 type Interface interface {
 	VerifyToken(ctx context.Context, tokenId string) (User, error)
 	CreateToken(ctx context.Context, user User) (Token, error)
-	RefreshToken(ctx context.Context, refreshToken string) (RefreshTokenResponse, error)
 
 	SetUserAuthInfo(ctx context.Context, user User, token *Token) context.Context
 	GetUserAuthInfo(ctx context.Context) (UserAuthInfo, error)
@@ -36,10 +35,8 @@ type auth struct {
 }
 
 type Config struct {
-	AccessTokenKey       string        `env:"AUTH_ACCESS_TOKEN_KEY"`
-	AccessTokenDuration  time.Duration `env:"AUTH_ACCESS_TOKEN_DURATION"`
-	RefreshTokenKey      string        `env:"AUTH_REFRESH_TOKEN_KEY"`
-	RefreshTokenDuration time.Duration `env:"AUTH_REFRESH_TOKEN_DURATION"`
+	AccessTokenKey      string        `env:"ACCESS_TOKEN_KEY"`
+	AccessTokenDuration time.Duration `env:"ACCESS_TOKEN_DURATION"`
 }
 
 func Init(cfg Config, log log.Interface, json parser.JSONInterface, httpClient *http.Client) Interface {
@@ -53,16 +50,21 @@ func Init(cfg Config, log log.Interface, json parser.JSONInterface, httpClient *
 
 func (a *auth) VerifyToken(ctx context.Context, accessToken string) (User, error) {
 	var user User
-	claims := jwt.MapClaims{}
-	refreshTokenParser := jwt.Parser{ValidMethods: []string{jwt.SigningMethodHS256.Name}}
-	_, err := refreshTokenParser.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.NewWithCode(codes.CodeAuth, "Unexpected signing method")
+		}
 		return []byte(a.conf.AccessTokenKey), nil
 	})
 	if err != nil {
-		return user, err
+		return user, errors.NewWithCode(codes.CodeAuth, err.Error())
 	}
 
-	user, expiry, err := a.extractClaims(claims)
+	if !token.Valid {
+		return user, errors.NewWithCode(codes.CodeAuthInvalidToken, "invalid token")
+	}
+
+	user, expiry, err := a.extractClaims(token.Claims.(jwt.MapClaims))
 	if err != nil {
 		return user, err
 	}
@@ -91,81 +93,13 @@ func (a *auth) CreateToken(ctx context.Context, user User) (Token, error) {
 		return Token{}, err
 	}
 
-	refreshExpiryTime := time.Now().Add(a.conf.RefreshTokenDuration).Unix()
-	refreshClaims := jwt.MapClaims{
-		"user:id":       user.Id,
-		"user:name":     user.Name,
-		"user:email":    user.Email,
-		"user:username": user.Username,
-		"user:role":     user.Role,
-		"user:scopes":   user.Scopes,
-		"expiry":        refreshExpiryTime,
-	}
-	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
-	refreshTokenString, err := refreshToken.SignedString([]byte(a.conf.RefreshTokenKey))
-	if err != nil {
-		return Token{}, err
-	}
-
 	token := Token{
-		TokenType:        header.AuthorizationBearer,
-		AccessToken:      accessTokenString,
-		AccessExpiresIn:  accessExpiryTime,
-		RefreshToken:     refreshTokenString,
-		RefreshExpiresIn: refreshExpiryTime,
+		TokenType:       header.AuthorizationBearer,
+		AccessToken:     accessTokenString,
+		AccessExpiresIn: accessExpiryTime,
 	}
 
 	return token, nil
-}
-
-func (a *auth) RefreshToken(ctx context.Context, refreshToken string) (RefreshTokenResponse, error) {
-	// Verify and decode the refresh token.
-	refreshTokenClaims := jwt.MapClaims{}
-	refreshTokenParser := jwt.Parser{ValidMethods: []string{jwt.SigningMethodHS256.Name}}
-	_, err := refreshTokenParser.ParseWithClaims(refreshToken, refreshTokenClaims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(a.conf.RefreshTokenKey), nil
-	})
-	if err != nil {
-		return RefreshTokenResponse{}, err
-	}
-
-	user, expiry, err := a.extractClaims(refreshTokenClaims)
-	if err != nil {
-		return RefreshTokenResponse{}, err
-	}
-
-	if time.Unix(expiry, 0).Before(time.Now()) {
-		return RefreshTokenResponse{}, errors.NewWithCode(codes.CodeAuthRefreshTokenExpired, "refresh token expired")
-	}
-
-	// Generate a new access token with updated claims.
-	accessExpiryTime := time.Now().Add(a.conf.AccessTokenDuration).Unix()
-	accessClaims := jwt.MapClaims{
-		"user:id":       user.Id,
-		"user:name":     user.Name,
-		"user:email":    user.Email,
-		"user:username": user.Username,
-		"user:role":     user.Role,
-		"user:scopes":   user.Scopes,
-		"expiry":        accessExpiryTime,
-	}
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
-	accessTokenString, err := accessToken.SignedString([]byte(a.conf.AccessTokenKey))
-	if err != nil {
-		return RefreshTokenResponse{}, err
-	}
-
-	// Return the new access & refresh token and its expiration time.
-	response := RefreshTokenResponse{
-		TokenType:        header.AuthorizationBearer,
-		AccessToken:      accessTokenString,
-		ExpiresIn:        accessExpiryTime,
-		RefreshToken:     refreshToken,
-		RefreshExpiresIn: time.Now().Add(a.conf.RefreshTokenDuration).Unix(),
-		UserID:           user.Id,
-	}
-
-	return response, nil
 }
 
 func (a *auth) extractClaims(claims jwt.MapClaims) (User, int64, error) {
@@ -198,7 +132,7 @@ func (a *auth) extractClaims(claims jwt.MapClaims) (User, int64, error) {
 		return user, expiredIn, errors.NewWithCode(codes.CodeAuth, "invalid role format")
 	}
 
-	scopes, ok := claims["user:scopes"].([]interface{})
+	scopes, ok := claims["user:scopes"].([]any)
 	if !ok {
 		return user, expiredIn, errors.NewWithCode(codes.CodeAuth, "Invalid scopes format")
 	}

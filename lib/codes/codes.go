@@ -269,7 +269,7 @@ var ApplicationMessages = AppMessage{
 	CodeAccepted: SuccessAccepted,
 }
 
-func Compile(code Code, lang string) Message {
+func Compile(code Code) Message {
 	if appMsg, ok := ApplicationMessages[code]; ok {
 		return appMsg
 	}

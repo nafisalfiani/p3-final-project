@@ -22,7 +22,7 @@ func (e *App) Error() string {
 }
 
 // Compile returns an error and creates new App errors
-func Compile(err error, lang string) (int, App) {
+func Compile(err error) (int, App) {
 	code := GetCode(err)
 
 	if appErr, ok := codes.ErrorMessages[code]; ok {

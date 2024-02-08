@@ -28,8 +28,8 @@ func main() {
 	})
 
 	// read from config
-	config := &config.Application{}
-	if err := cfg.ReadConfig(config); err != nil {
+	config := config.Application{}
+	if err := cfg.ReadConfig(&config); err != nil {
 		log.DefaultLogger().Fatal(context.Background(), err)
 	}
 
@@ -64,7 +64,8 @@ func main() {
 	dom := domain.Init(logger)
 
 	// init uc
-	uc := usecase.Init(logger, sec, validator, dom)
+	uc := usecase.Init(config.Usecase, logger, sec, validator, dom)
+	defer uc.CloseAllConns()
 
 	// init and run scheduler
 	sch := scheduler.Init(config.Jobs, logger, auth, uc)

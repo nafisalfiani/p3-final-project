@@ -21,12 +21,14 @@ type Interface interface {
 type schedule struct {
 	scheduler scheduler.Interface
 	log       log.Interface
+	uc        *usecase.Usecases
 }
 
 func Init(conf Config, log log.Interface, auth auth.Interface, uc *usecase.Usecases) Interface {
 	s := &schedule{
 		scheduler: scheduler.Init(log, auth),
 		log:       log,
+		uc:        uc,
 	}
 
 	s.scheduler.AssignTask(conf.HelloWorld, s.HelloWorld)

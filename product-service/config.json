@@ -1,0 +1,39 @@
+{
+    "auth": {
+      "accesstokenkey": "1lk2e967dus^8hs6dASU@JE",
+      "accesstokenduration": "3600s",
+      "refreshtokenkey": "6s!7hJd2l8eAkR#9Usd6u",
+      "refreshtokenduration": "43200s"
+    },
+    "log": {
+      "level": "debug"
+    },
+    "security": {
+      "secretkey": "5dge967dus^8hs6dA$bD7rH"
+    },
+    "nosql": {
+      "maxidleconn": "10",
+      "maxidletime": "10s",
+      "dsn": "mongodb+srv://ica:password1234@cluster0.odxlqrs.mongodb.net/?retryWrites=true&w=majority"
+    },
+    "cache": {
+      "protocol": "",
+      "host": "localhost",
+      "port": "6379",
+      "username": "",
+      "password": "",
+      "defaultttl": "3600s",
+      "tls": {
+        "enabled": false,
+        "insecureskipverify": false
+      }
+    },
+    "broker": {
+      "url": "amqp://localhost:5672"
+    },
+    "grpc": {
+      "base": "",
+      "port": "50052"
+    }
+  }
+  

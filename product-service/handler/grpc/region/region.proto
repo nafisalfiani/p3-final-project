@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package region;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "./grpc/region";
+
+// Region definition
+message Region {
+  string id = 1;
+  string name = 2;
+}
+
+// RegionList definition
+message RegionList {
+  repeated Region regions = 1;
+}
+
+// RegionService definition
+service RegionService {
+  rpc GetRegion(Region) returns (Region);
+  rpc CreateRegion(Region) returns (Region);
+  rpc UpdateRegion(Region) returns (Region);
+  rpc DeleteRegion(Region) returns (google.protobuf.Empty);
+  rpc GetRegions(google.protobuf.Empty) returns (RegionList);
+}

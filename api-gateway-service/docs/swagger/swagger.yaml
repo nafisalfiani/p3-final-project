@@ -16,6 +16,13 @@ definitions:
       pagination:
         $ref: '#/definitions/entity.Pagination'
     type: object
+  entity.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   entity.Meta:
     properties:
       error:
@@ -61,6 +68,26 @@ definitions:
       total_pages:
         type: integer
     type: object
+  entity.Ping:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+      version:
+        type: string
+    type: object
+  entity.RegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   entity.TriggerSchedulerParams:
     properties:
       name:
@@ -69,19 +96,6 @@ definitions:
 info:
   contact: {}
 paths:
-  /api/ping:
-    get:
-      description: This endpoint will hit the server
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: PONG!
-          schema:
-            type: string
-      summary: Health Check
-      tags:
-      - Server
   /api/v1/admin/scheduler/trigger:
     post:
       description: Trigger Scheduler
@@ -113,4 +127,77 @@ paths:
       summary: Trigger Scheduler
       tags:
       - Scheduler
+  /auth/v1/login:
+    post:
+      description: This endpoint will sign in user with username and password
+      parameters:
+      - description: Input Username And Password
+        in: body
+        name: login_request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: Sign In With Password
+      tags:
+      - Auth
+  /auth/v1/register:
+    post:
+      description: This endpoint will register new user as member
+      parameters:
+      - description: Input Username And Password
+        in: body
+        name: register_request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: Register new user
+      tags:
+      - Auth
+  /ping:
+    get:
+      description: This endpoint will hit the server
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Ping'
+      summary: Health Check
+      tags:
+      - Server
 swagger: "2.0"

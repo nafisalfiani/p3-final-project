@@ -2,7 +2,6 @@ package configreader
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"reflect"
 	"regexp"
@@ -52,19 +51,6 @@ func initViper(opt Options) Interface {
 	return c
 }
 
-func (c *viperReader) mergeEnvConfig() {
-	var svcVersion string
-	switch {
-	case os.Getenv("SERVICE_VERSION") != "":
-		svcVersion = os.Getenv("SERVICE_VERSION")
-	default:
-		svcVersion = "dev"
-	}
-	meta := c.viper.GetStringMap("meta")
-	meta["version"] = svcVersion
-	c.viper.Set("meta", meta)
-}
-
 func (c *viperReader) resolveJSONRef() {
 	refmap := make(map[string]interface{})
 	refregxp := regexp.MustCompile(`^\\$ref:#\\/(.*)$`)
@@ -85,13 +71,11 @@ func (c *viperReader) resolveJSONRef() {
 }
 
 func (c *viperReader) ReadConfig(cfg interface{}) error {
-	c.mergeEnvConfig()
-
 	if files.GetExtension(filepath.Base(c.opt.ConfigFile)) == JSONType {
 		c.resolveJSONRef()
 	}
 
-	decoder, err := mapstructure.NewDecoder(decoderConfig(&cfg))
+	decoder, err := mapstructure.NewDecoder(decoderConfig(cfg))
 	if err != nil {
 		panic(fmt.Errorf("fatal error found during decoder creation. err: %w", err))
 	}
@@ -103,7 +87,7 @@ func (c *viperReader) ReadConfig(cfg interface{}) error {
 	return nil
 }
 
-func (c *viperReader) AllSettings() map[string]interface{} {
+func (c *viperReader) AllSettings() map[string]any {
 	return c.viper.AllSettings()
 }
 

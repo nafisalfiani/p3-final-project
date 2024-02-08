@@ -7,7 +7,7 @@ import (
 )
 
 type Config struct {
-	Url string `env:"BROKER_URL"`
+	Url string `env:"URL"`
 }
 
 type Interface interface {

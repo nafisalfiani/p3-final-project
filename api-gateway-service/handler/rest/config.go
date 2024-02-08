@@ -2,8 +2,6 @@ package rest
 
 import (
 	"time"
-
-	"github.com/nafisalfiani/p3-final-project/lib/auth"
 )
 
 type Config struct {
@@ -17,7 +15,6 @@ type Config struct {
 	Meta            MetaConfig
 	Swagger         SwaggerConfig
 	Platform        PlatformConfig
-	Auth            auth.Config
 }
 
 type CorsConfig struct {

@@ -2,6 +2,7 @@ package nosql
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -10,9 +11,9 @@ import (
 )
 
 type Config struct {
-	MaxIdleConn uint64        `env:"NO_SQL_MAX_IDLE_CONN"`
-	MaxIdleTime time.Duration `env:"NO_SQL_MAX_IDLE_TIME"`
-	DSN         string        `env:"NO_SQL_DSN"`
+	MaxIdleConn uint64        `env:"MAX_IDLE_CONN"`
+	MaxIdleTime time.Duration `env:"MAX_IDLE_TIME"`
+	DSN         string        `env:"DSN"`
 }
 
 func Init(cfg Config) (*mongo.Client, error) {
@@ -23,8 +24,10 @@ func Init(cfg Config) (*mongo.Client, error) {
 		SetMinPoolSize(1).
 		SetMaxConnIdleTime(cfg.MaxIdleTime)
 
+	log.Println(cfg.DSN)
 	client, err := mongo.Connect(context.Background(), opts)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 

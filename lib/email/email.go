@@ -21,12 +21,10 @@ const (
 
 type Interface interface {
 	SendEmail(ctx context.Context, params SendEmailParams) error
-	GenerateBody() TemplateInterface
 }
 
 type Config struct {
-	SMTP     SMTPConfig
-	Template TemplateConfig
+	SMTP SMTPConfig
 }
 
 type SMTPConfig struct {
@@ -39,17 +37,10 @@ type SMTPConfig struct {
 	}
 }
 
-type AWSSESConfig struct {
-	Region          string
-	AccessKeyID     string
-	SecretAccessKey string
-}
-
 type email struct {
-	dialer   *gomail.Dialer
-	config   Config
-	log      log.Interface
-	template TemplateInterface
+	dialer *gomail.Dialer
+	config Config
+	log    log.Interface
 }
 
 func Init(cfg Config, log log.Interface) Interface {
@@ -58,10 +49,9 @@ func Init(cfg Config, log log.Interface) Interface {
 		dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 	return &email{
-		dialer:   dialer,
-		config:   cfg,
-		log:      log,
-		template: initTemplate(cfg.Template, log),
+		dialer: dialer,
+		config: cfg,
+		log:    log,
 	}
 }
 
@@ -89,8 +79,4 @@ func (e *email) SendEmail(ctx context.Context, param SendEmailParams) error {
 	}
 
 	return nil
-}
-
-func (e *email) GenerateBody() TemplateInterface {
-	return e.template
 }

@@ -10,8 +10,6 @@ import (
 const (
 	QueueTopicUser      = "user"
 	QueueTopicUserAdded = "user_added"
-
-	RedisKeyUser = "acc-svc:user:%v"
 )
 
 type User struct {
@@ -39,28 +37,4 @@ func (u User) ToAuthUser() auth.User {
 	}
 
 	return user
-}
-
-type UserCreateRequest struct {
-	Name     string `json:"name" validate:"required"`
-	Username string `json:"username" validate:"required"`
-	Email    string `json:"email" validate:"required"`
-	Password string `json:"password" validate:"required"`
-}
-
-type UserUpdateRequest struct {
-	Id       primitive.ObjectID `param:"id"`
-	Name     string             `json:"name" validate:"required"`
-	Username string             `json:"username" validate:"required"`
-	Email    string             `json:"email" validate:"required"`
-	Password string             `json:"password" validate:"required"`
-}
-
-type UserGetRequest struct {
-	Id primitive.ObjectID `param:"id" validate:"required"`
-}
-
-type LoginRequest struct {
-	Email    string `json:"email" validate:"required"`
-	Password string `json:"password" validate:"required"`
 }

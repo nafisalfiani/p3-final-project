@@ -35,18 +35,18 @@ type Interface interface {
 }
 
 type TLSConfig struct {
-	Enabled            bool
-	InsecureSkipVerify bool
+	Enabled            bool `env:"ENABLED"`
+	InsecureSkipVerify bool `env:"INSECURE_SKIP_VERIFY"`
 }
 
 type Config struct {
-	Protocol   string        `env:"CACHE_PROTOCOL"`
-	Host       string        `env:"CACHE_HOST"`
-	Port       string        `env:"CACHE_PORT"`
-	Username   string        `env:"CACHE_USERNAME"`
-	Password   string        `env:"CACHE_PASSWORD"`
-	DefaultTTL time.Duration `env:"CACHE_DEFAULT_TTL"`
-	TLS        TLSConfig     `env:"CACHE_TLS"`
+	Protocol   string        `env:"PROTOCOL"`
+	Host       string        `env:"HOST"`
+	Port       string        `env:"PORT"`
+	Username   string        `env:"USERNAME"`
+	Password   string        `env:"PASSWORD"`
+	DefaultTTL time.Duration `env:"DEFAULT_TTL"`
+	TLS        TLSConfig     `env:"TLS"`
 }
 
 type cache struct {
