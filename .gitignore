@@ -10,10 +10,22 @@
 
 # App binaries
 account-service/build/
+api-gateway-service/build/
+notification-service/build/
+product-service/build/
+transaction-service/build/
 
 # Configuration
 account-service/.env
 account-service/config.json
+api-gateway-service/.env
+api-gateway-service/config.json
+notification-service/.env
+notification-service/config.json
+product-service/.env
+product-service/config.json
+transaction-service/.env
+transaction-service/config.json
 
 # Test binary, built with `go test -c`
 *.test
