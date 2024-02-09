@@ -66,7 +66,7 @@ func (r *role) Get(ctx context.Context, role entity.Role) (entity.Role, error) {
 		cacheKey = fmt.Sprintf("id:%v", role.Id.Hex())
 	}
 
-	role, err := r.getCache(ctx, cacheKey)
+	role, err := r.getCache(ctx, fmt.Sprintf(entity.CacheKeyRole, cacheKey))
 	if err == nil && !role.Id.IsZero() {
 		r.logger.Info(ctx, fmt.Sprintf("cache for role:%v found", role.Id.Hex()))
 		return role, nil
@@ -82,7 +82,7 @@ func (r *role) Get(ctx context.Context, role entity.Role) (entity.Role, error) {
 	}
 
 	// set role cache if result found
-	if err := r.setCache(ctx, cacheKey, role); err != nil {
+	if err := r.setCache(ctx, fmt.Sprintf(entity.CacheKeyRole, cacheKey), role); err != nil {
 		r.logger.Error(ctx, fmt.Sprintf("cache for user:%v failed to be set", role.Id.Hex()))
 	}
 

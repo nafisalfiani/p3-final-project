@@ -39,15 +39,7 @@ func (u *grpcUser) GetUser(ctx context.Context, req *User) (*User, error) {
 }
 
 func (u *grpcUser) CreateUser(ctx context.Context, req *User) (*User, error) {
-	userInfo, err := u.auth.GetUserAuthInfo(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	user := fromProto(req)
-	user.CreatedBy = userInfo.User.Id
-
-	newUser, err := u.user.Create(ctx, user)
+	newUser, err := u.user.Create(ctx, fromProto(req))
 	if err != nil {
 		return nil, err
 	}

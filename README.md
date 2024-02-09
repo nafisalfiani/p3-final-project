@@ -52,3 +52,5 @@ ketson-db
 xGH5^fo/;*P#Z^[u
 
 ## Redis
+
+redis-cli -h redis-11010.c1.ap-southeast-1-1.ec2.cloud.redislabs.com -p 11010 -u default -a mCEeZ038zlvm6KlIkmzR1Tb7ok3A6LNQ

@@ -23,7 +23,7 @@ type TicketServiceClient interface {
 	CreateTicket(ctx context.Context, in *Ticket, opts ...grpc.CallOption) (*Ticket, error)
 	UpdateTicket(ctx context.Context, in *Ticket, opts ...grpc.CallOption) (*Ticket, error)
 	DeleteTicket(ctx context.Context, in *Ticket, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	GetTickets(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TicketList, error)
+	GetTickets(ctx context.Context, in *Ticket, opts ...grpc.CallOption) (*TicketList, error)
 }
 
 type ticketServiceClient struct {
@@ -70,7 +70,7 @@ func (c *ticketServiceClient) DeleteTicket(ctx context.Context, in *Ticket, opts
 	return out, nil
 }
 
-func (c *ticketServiceClient) GetTickets(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TicketList, error) {
+func (c *ticketServiceClient) GetTickets(ctx context.Context, in *Ticket, opts ...grpc.CallOption) (*TicketList, error) {
 	out := new(TicketList)
 	err := c.cc.Invoke(ctx, "/ticket.TicketService/GetTickets", in, out, opts...)
 	if err != nil {
@@ -87,7 +87,7 @@ type TicketServiceServer interface {
 	CreateTicket(context.Context, *Ticket) (*Ticket, error)
 	UpdateTicket(context.Context, *Ticket) (*Ticket, error)
 	DeleteTicket(context.Context, *Ticket) (*emptypb.Empty, error)
-	GetTickets(context.Context, *emptypb.Empty) (*TicketList, error)
+	GetTickets(context.Context, *Ticket) (*TicketList, error)
 	mustEmbedUnimplementedTicketServiceServer()
 }
 
@@ -107,7 +107,7 @@ func (UnimplementedTicketServiceServer) UpdateTicket(context.Context, *Ticket) (
 func (UnimplementedTicketServiceServer) DeleteTicket(context.Context, *Ticket) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTicket not implemented")
 }
-func (UnimplementedTicketServiceServer) GetTickets(context.Context, *emptypb.Empty) (*TicketList, error) {
+func (UnimplementedTicketServiceServer) GetTickets(context.Context, *Ticket) (*TicketList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTickets not implemented")
 }
 func (UnimplementedTicketServiceServer) mustEmbedUnimplementedTicketServiceServer() {}
@@ -196,7 +196,7 @@ func _TicketService_DeleteTicket_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _TicketService_GetTickets_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(Ticket)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -208,7 +208,7 @@ func _TicketService_GetTickets_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/ticket.TicketService/GetTickets",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TicketServiceServer).GetTickets(ctx, req.(*emptypb.Empty))
+		return srv.(TicketServiceServer).GetTickets(ctx, req.(*Ticket))
 	}
 	return interceptor(ctx, in, info, handler)
 }

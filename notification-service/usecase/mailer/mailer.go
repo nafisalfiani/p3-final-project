@@ -15,7 +15,7 @@ type Config struct {
 
 type Interface interface {
 	SendRegistrationEmail(ctx context.Context, user entity.User) error
-	SendTransactionEmail(ctx context.Context) error
+	SendTransactionEmail(ctx context.Context, trx entity.Transaction) error
 }
 
 type mailer struct {
@@ -46,9 +46,18 @@ func (m *mailer) SendRegistrationEmail(ctx context.Context, user entity.User) er
 	return m.mailer.Send(ctx, content)
 }
 
-func (m *mailer) SendTransactionEmail(ctx context.Context) error {
-	// TODO: compose email
-	content := entity.Email{}
+func (m *mailer) SendTransactionEmail(ctx context.Context, trx entity.Transaction) error {
+	content := entity.Email{
+		Body:        fmt.Sprintf(`Do Payment here: %v`, trx.XenditPaymentUrl),
+		BodyType:    header.ContentTypePlain,
+		Subject:     "Ketson - Transaction",
+		SenderName:  "Ketson",
+		SenderEmail: "no-reply@ketson.com",
+		Recipients: entity.Recipient{
+			ToEmails:  []string{"nafisa.alfiani.ica@gmail.com"},
+			BCCEmails: []string{"nafisa.alfiani.ica@gmail.com"},
+		},
+	}
 
 	return m.mailer.Send(ctx, content)
 }

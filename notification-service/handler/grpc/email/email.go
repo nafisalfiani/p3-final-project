@@ -4,6 +4,7 @@ import (
 	context "context"
 
 	"github.com/nafisalfiani/p3-final-project/lib/log"
+	"github.com/nafisalfiani/p3-final-project/notification-service/entity"
 	"github.com/nafisalfiani/p3-final-project/notification-service/usecase/mailer"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
@@ -32,7 +33,7 @@ func (r *grpcMail) SendRegistrationMail(ctx context.Context, in *User) (*emptypb
 }
 
 func (r *grpcMail) SendTransactionMail(ctx context.Context, in *Email) (*emptypb.Empty, error) {
-	err := r.mailer.SendTransactionEmail(ctx)
+	err := r.mailer.SendTransactionEmail(ctx, entity.Transaction{})
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}

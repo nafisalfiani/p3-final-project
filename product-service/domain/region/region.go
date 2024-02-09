@@ -43,7 +43,7 @@ func Init(logger log.Interface, json parser.JSONInterface, db *mongo.Collection,
 // List returns list of regions
 func (r *region) List(ctx context.Context) ([]entity.Region, error) {
 	regions := []entity.Region{}
-	cursor, err := r.collection.Find(ctx, bson.D{})
+	cursor, err := r.collection.Find(ctx, bson.M{})
 	if err != nil {
 		return regions, errors.NewWithCode(codes.CodeNoSQLRead, err.Error())
 	}
@@ -89,7 +89,7 @@ func (r *region) Get(ctx context.Context, req entity.Region) (entity.Region, err
 	}
 
 	// set region cache if result found from mongo
-	if err := r.setCache(ctx, cacheKey, region); err != nil {
+	if err := r.setCache(ctx, fmt.Sprintf(entity.CacheKeyRegion, cacheKey), region); err != nil {
 		r.logger.Error(ctx, fmt.Sprintf("cache for region:%v failed to be set", req.Id.Hex()))
 	}
 

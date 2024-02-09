@@ -1,6 +1,7 @@
 package wallet
 
 import (
+	"github.com/google/uuid"
 	"github.com/nafisalfiani/p3-final-project/transaction-service/entity"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -9,7 +10,7 @@ func toProto(wallet entity.Wallet) *Wallet {
 	var history []*History
 	for i := range wallet.History {
 		history = append(history, &History{
-			Id:              wallet.History[i].Id,
+			Id:              wallet.History[i].Id.String(),
 			WalletId:        wallet.History[i].WalletId,
 			PreviousBalance: wallet.History[i].PreviousBalance,
 			CurrentBalance:  wallet.History[i].CurrentBalance,
@@ -20,7 +21,7 @@ func toProto(wallet entity.Wallet) *Wallet {
 	}
 
 	return &Wallet{
-		Id:        wallet.Id,
+		Id:        wallet.Id.String(),
 		UserId:    wallet.UserId,
 		Balance:   wallet.Balance,
 		History:   history,
@@ -34,8 +35,9 @@ func toProto(wallet entity.Wallet) *Wallet {
 func fromProto(in *Wallet) entity.Wallet {
 	var history []entity.WalletHistory
 	for _, v := range in.GetHistory() {
+		uid, _ := uuid.Parse(in.GetId())
 		history = append(history, entity.WalletHistory{
-			Id:              v.Id,
+			Id:              uid,
 			WalletId:        v.WalletId,
 			PreviousBalance: v.PreviousBalance,
 			CurrentBalance:  v.CurrentBalance,
@@ -45,8 +47,9 @@ func fromProto(in *Wallet) entity.Wallet {
 		})
 	}
 
+	uid, _ := uuid.Parse(in.GetId())
 	return entity.Wallet{
-		Id:        in.GetId(),
+		Id:        uid,
 		UserId:    in.GetUserId(),
 		Balance:   in.GetBalance(),
 		History:   history,

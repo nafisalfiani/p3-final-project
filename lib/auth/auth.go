@@ -132,16 +132,16 @@ func (a *auth) extractClaims(claims jwt.MapClaims) (User, int64, error) {
 		return user, expiredIn, errors.NewWithCode(codes.CodeAuth, "invalid role format")
 	}
 
-	scopes, ok := claims["user:scopes"].([]any)
-	if !ok {
-		return user, expiredIn, errors.NewWithCode(codes.CodeAuth, "Invalid scopes format")
-	}
+	// scopes, ok := claims["user:scopes"].([]any)
+	// if !ok {
+	// 	return user, expiredIn, errors.NewWithCode(codes.CodeAuth, "Invalid scopes format")
+	// }
 
-	for i := range scopes {
-		if s, ok := scopes[i].(string); ok {
-			user.Scopes = append(user.Scopes, s)
-		}
-	}
+	// for i := range scopes {
+	// 	if s, ok := scopes[i].(string); ok {
+	// 		user.Scopes = append(user.Scopes, s)
+	// 	}
+	// }
 
 	expiry, ok := claims["expiry"].(float64)
 	if !ok {

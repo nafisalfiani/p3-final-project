@@ -1,13 +1,9 @@
 package entity
 
-import (
-	"time"
-
-	"github.com/google/uuid"
-)
+import "time"
 
 type Transaction struct {
-	Id               uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
+	Id               string    `json:"id" gorm:"primaryKey"`
 	TicketId         string    `json:"ticket_id"`
 	TicketCount      int64     `json:"ticket_count"`
 	BuyerId          string    `json:"buyer_id"`

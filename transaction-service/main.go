@@ -17,6 +17,7 @@ import (
 	"github.com/nafisalfiani/p3-final-project/transaction-service/entity"
 	"github.com/nafisalfiani/p3-final-project/transaction-service/handler/grpc"
 	"github.com/nafisalfiani/p3-final-project/transaction-service/usecase"
+	"github.com/xendit/xendit-go/v4"
 )
 
 func main() {
@@ -72,15 +73,13 @@ func main() {
 	// init auth
 	auth := auth.Init(config.Auth, logger, parser.JSONParser(), http.DefaultClient)
 
+	xnd := xendit.NewClient(config.Xendit.ApiKey)
+
 	// init domain
-	dom := domain.Init(logger, parser.JSONParser(), db, broker)
+	dom := domain.Init(logger, parser.JSONParser(), db, broker, xnd)
 
 	// init usecase
-	uc := usecase.Init(logger, dom)
-
-	// TODO: init consumer
-
-	// TODO: init scheduler
+	uc := usecase.Init(logger, dom, broker)
 
 	// init grpc
 	grpc := grpc.Init(config.Grpc, logger, uc, sec, auth, validator)

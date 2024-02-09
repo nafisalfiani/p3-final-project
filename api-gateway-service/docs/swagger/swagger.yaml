@@ -88,13 +88,48 @@ definitions:
       username:
         type: string
     type: object
+  entity.TicketCreateRequest:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      region:
+        type: string
+      selling_price:
+        type: number
+      start_date:
+        type: string
+      title:
+        type: string
+      venue_entrance_gate:
+        type: string
+      venue_name:
+        type: string
+    required:
+    - category
+    - description
+    - region
+    - selling_price
+    - start_date
+    - title
+    - venue_entrance_gate
+    - venue_name
+    type: object
+  entity.TransactionCreateRequest:
+    properties:
+      ticket_id:
+        type: string
+    type: object
   entity.TriggerSchedulerParams:
     properties:
       name:
         type: string
     type: object
 info:
-  contact: {}
+  contact:
+    email: nafisa.alfiani.ica@gmail.com
+    name: Nafisa Alfiani
 paths:
   /api/v1/admin/scheduler/trigger:
     post:
@@ -127,6 +162,383 @@ paths:
       summary: Trigger Scheduler
       tags:
       - Scheduler
+  /api/v1/category:
+    get:
+      description: This endpoint will return a list of category
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: List category
+      tags:
+      - Product
+  /api/v1/region:
+    get:
+      description: This endpoint will return a list of region
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: List region
+      tags:
+      - Product
+  /api/v1/ticket:
+    get:
+      description: This endpoint will return a list of tickets not yet bought/sold
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: List ticket
+      tags:
+      - Product
+    post:
+      description: This endpoint will accept a request to put ticket up for sale
+      parameters:
+      - description: ticket request
+        in: body
+        name: ticket
+        required: true
+        schema:
+          $ref: '#/definitions/entity.TicketCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: Register ticket for sale
+      tags:
+      - Product
+  /api/v1/ticket-bought:
+    get:
+      description: This endpoint will return a list of tickets bought by logged in
+        user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: List ticket bought by me
+      tags:
+      - Product
+  /api/v1/ticket-sold:
+    get:
+      description: This endpoint will return a list of tickets sold by logged in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: List ticket sold by me
+      tags:
+      - Product
+  /api/v1/ticket/:id:
+    delete:
+      description: This endpoint will accept request to take down ticket
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: Delete ticket
+      tags:
+      - Product
+    put:
+      description: This endpoint will accept request to update specific ticket
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: Update ticket info
+      tags:
+      - Product
+  /api/v1/transaction:
+    get:
+      description: This endpoint will return a list of tickets not yet bought/sold
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: List transaction
+      tags:
+      - Transaction
+    post:
+      description: This endpoint will accept a request to create transaction
+      parameters:
+      - description: transaction
+        in: body
+        name: trx
+        required: true
+        schema:
+          $ref: '#/definitions/entity.TransactionCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: Create transaction
+      tags:
+      - Transaction
+    put:
+      description: This endpoint will accept a request to update transaction
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: Update transaction
+      tags:
+      - Transaction
+  /api/v1/wallet:
+    get:
+      description: This endpoint will return user wallet
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: Wallet
+      tags:
+      - Transaction
+  /api/v1/wishlist:
+    delete:
+      description: This endpoint will accept a request to unsubscribe from wishlist
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: Unsubscribe from wishlist
+      tags:
+      - Wishlist
+    get:
+      description: This endpoint will return a list of wishlist
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: List wishlist
+      tags:
+      - Wishlist
+    post:
+      description: This endpoint will accept a request to subscribe to wishlist
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: Subscribe to wishlist
+      tags:
+      - Wishlist
+  /api/v1/wishlist/:id:
+    get:
+      description: This endpoint will return a list of wishlist subscriber
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.HTTPResp'
+      security:
+      - BearerAuth: []
+      summary: Get wishlist subscriber
+      tags:
+      - Wishlist
   /auth/v1/login:
     post:
       description: This endpoint will sign in user with username and password
@@ -223,4 +635,9 @@ paths:
       summary: Health Check
       tags:
       - Server
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

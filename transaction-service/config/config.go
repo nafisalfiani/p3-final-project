@@ -18,4 +18,9 @@ type Application struct {
 	Cache    cache.Config    `env:"CACHE"`
 	Broker   broker.Config   `env:"BROKER"`
 	Grpc     grpc.Config     `env:"GRPC"`
+	Xendit   Xendit
+}
+
+type Xendit struct {
+	ApiKey string
 }

@@ -21,9 +21,9 @@ type Domains struct {
 
 func Init(logger log.Interface, json parser.JSONInterface, db *mongo.Client, cache cache.Interface, broker broker.Interface) *Domains {
 	return &Domains{
-		Ticket:   ticket.Init(logger, json, db.Database("product-service").Collection("product"), cache, broker),
-		Category: category.Init(logger, json, db.Database("product-service").Collection("category"), cache),
-		Region:   region.Init(logger, json, db.Database("product-service").Collection("region"), cache),
-		Wishlist: wishlist.Init(logger, json, db.Database("product-service").Collection("wishlist")),
+		Ticket:   ticket.Init(logger, json, db.Database("ketson_product_db").Collection("ticket"), cache, broker),
+		Category: category.Init(logger, json, db.Database("ketson_product_db").Collection("category"), cache),
+		Region:   region.Init(logger, json, db.Database("ketson_product_db").Collection("region"), cache),
+		Wishlist: wishlist.Init(logger, json, db.Database("ketson_product_db").Collection("wishlist")),
 	}
 }

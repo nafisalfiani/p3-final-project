@@ -4,7 +4,7 @@ import (
 	context "context"
 
 	"github.com/nafisalfiani/p3-final-project/lib/log"
-	"github.com/nafisalfiani/p3-final-project/product-service/domain/ticket"
+	"github.com/nafisalfiani/p3-final-project/product-service/usecase/ticket"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -57,8 +57,8 @@ func (t *grpcTicket) DeleteTicket(ctx context.Context, in *Ticket) (*emptypb.Emp
 	return &emptypb.Empty{}, nil
 }
 
-func (t *grpcTicket) GetTickets(ctx context.Context, in *emptypb.Empty) (*TicketList, error) {
-	tickets, err := t.ticket.List(ctx)
+func (t *grpcTicket) GetTickets(ctx context.Context, in *Ticket) (*TicketList, error) {
+	tickets, err := t.ticket.List(ctx, fromProto(in))
 	if err != nil {
 		return nil, err
 	}

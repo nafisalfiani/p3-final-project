@@ -23,30 +23,30 @@ func Init(log log.Interface, trx transaction.Interface) TransactionServiceServer
 func (t *grpcTrx) mustEmbedUnimplementedTransactionServiceServer() {}
 
 func (t *grpcTrx) GetTransaction(ctx context.Context, in *Transaction) (*Transaction, error) {
-	wishlist, err := t.trx.Get(ctx, fromProto(in))
+	transaction, err := t.trx.Get(ctx, fromProto(in))
 	if err != nil {
 		return nil, err
 	}
 
-	return toProto(wishlist), nil
+	return toProto(transaction), nil
 }
 
 func (t *grpcTrx) CreateTransaction(ctx context.Context, in *Transaction) (*Transaction, error) {
-	wishlist, err := t.trx.Create(ctx, fromProto(in))
+	transaction, err := t.trx.Create(ctx, fromProto(in))
 	if err != nil {
 		return nil, err
 	}
 
-	return toProto(wishlist), nil
+	return toProto(transaction), nil
 }
 
 func (t *grpcTrx) UpdateTransaction(ctx context.Context, in *Transaction) (*Transaction, error) {
-	wishlist, err := t.trx.Update(ctx, fromProto(in))
+	transaction, err := t.trx.Update(ctx, fromProto(in))
 	if err != nil {
 		return nil, err
 	}
 
-	return toProto(wishlist), nil
+	return toProto(transaction), nil
 }
 
 func (t *grpcTrx) DeleteTransaction(ctx context.Context, in *Transaction) (*emptypb.Empty, error) {

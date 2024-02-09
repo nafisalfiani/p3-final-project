@@ -17,7 +17,7 @@ type Domains struct {
 
 func Init(logger log.Interface, json parser.JSONInterface, db *mongo.Client, cache cache.Interface, broker broker.Interface) *Domains {
 	return &Domains{
-		User: user.Init(logger, json, db.Database("account-service").Collection("user"), cache, broker),
-		Role: role.Init(logger, json, db.Database("account-service").Collection("role"), cache),
+		User: user.Init(logger, json, db.Database("ketson_account_db").Collection("user"), cache, broker),
+		Role: role.Init(logger, json, db.Database("ketson_account_db").Collection("role"), cache),
 	}
 }

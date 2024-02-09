@@ -90,14 +90,14 @@ func (c *consumer) StartTransactionConsumer(ctx context.Context) {
 	}
 
 	for d := range msgs {
-		var email entity.Email
-		if err := c.json.Unmarshal(d.Body, &email); err != nil {
+		var trx entity.Transaction
+		if err := c.json.Unmarshal(d.Body, &trx); err != nil {
 			c.logger.Error(ctx, err)
 			continue
 		}
 
 		c.logger.Info(ctx, "sending transaction email")
-		if err := c.mailer.SendTransactionEmail(ctx); err != nil {
+		if err := c.mailer.SendTransactionEmail(ctx, trx); err != nil {
 			c.logger.Error(ctx, err)
 			d.Reject(true)
 		}

@@ -6,8 +6,8 @@ import (
 	accountservice "github.com/nafisalfiani/p3-final-project/api-gateway-service/usecase/account_service"
 	productservice "github.com/nafisalfiani/p3-final-project/api-gateway-service/usecase/product_service"
 	transactionservice "github.com/nafisalfiani/p3-final-project/api-gateway-service/usecase/transaction_service"
+	"github.com/nafisalfiani/p3-final-project/lib/auth"
 	"github.com/nafisalfiani/p3-final-project/lib/log"
-	"github.com/nafisalfiani/p3-final-project/lib/security"
 )
 
 type Usecases struct {
@@ -22,10 +22,10 @@ type Config struct {
 	TransactionConfig transactionservice.Config
 }
 
-func Init(cfg Config, logger log.Interface, sec security.Interface, validator *validator.Validate, dom *domain.Domains) *Usecases {
+func Init(cfg Config, logger log.Interface, auth auth.Interface, validator *validator.Validate, dom *domain.Domains) *Usecases {
 	return &Usecases{
 		AccountSvc:     accountservice.Init(cfg.AccountConfig, logger),
-		ProductSvc:     productservice.Init(cfg.ProductConfig, logger),
+		ProductSvc:     productservice.Init(cfg.ProductConfig, logger, auth),
 		TransactionSvc: transactionservice.Init(cfg.TransactionConfig, logger),
 	}
 }

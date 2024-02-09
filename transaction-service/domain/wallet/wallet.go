@@ -3,6 +3,7 @@ package wallet
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/nafisalfiani/p3-final-project/lib/codes"
 	"github.com/nafisalfiani/p3-final-project/lib/errors"
 	"github.com/nafisalfiani/p3-final-project/transaction-service/entity"
@@ -78,7 +79,12 @@ func (w *wallet) Update(ctx context.Context, wallet entity.Wallet) (entity.Walle
 
 // Delete deletes existing data
 func (w *wallet) Delete(ctx context.Context, id string) error {
-	if err := w.db.Delete(&entity.Wallet{Id: id}).Error; err != nil {
+	uid, err := uuid.Parse(id)
+	if err != nil {
+		return err
+	}
+
+	if err := w.db.Delete(&entity.Wallet{Id: uid}).Error; err != nil {
 		return errors.NewWithCode(codes.CodeSQLDelete, err.Error())
 	}
 

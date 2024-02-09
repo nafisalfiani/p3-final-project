@@ -43,7 +43,7 @@ func Init(logger log.Interface, json parser.JSONInterface, db *mongo.Collection,
 // List returns list of categories
 func (c *category) List(ctx context.Context) ([]entity.Category, error) {
 	categories := []entity.Category{}
-	cursor, err := c.collection.Find(ctx, bson.D{})
+	cursor, err := c.collection.Find(ctx, bson.M{})
 	if err != nil {
 		return categories, errors.NewWithCode(codes.CodeNoSQLRead, err.Error())
 	}
@@ -89,7 +89,7 @@ func (c *category) Get(ctx context.Context, req entity.Category) (entity.Categor
 	}
 
 	// set category cache if result found from mongo
-	if err := c.setCache(ctx, cacheKey, category); err != nil {
+	if err := c.setCache(ctx, fmt.Sprintf(entity.CacheKeyCategory, cacheKey), category); err != nil {
 		c.logger.Error(ctx, fmt.Sprintf("cache for category:%v failed to be set", req.Id.Hex()))
 	}
 

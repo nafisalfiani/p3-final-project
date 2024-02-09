@@ -13,17 +13,20 @@ message Ticket {
   string title = 2;
   string description = 3;
   string seller_id = 4;
-  google.protobuf.Timestamp start_date = 5;
-  string category_name = 6;
-  string region_name = 7;
-  string venue_name = 8;
-  string venue_entrance_gate = 9;
-  string venue_coordinate_lat = 10;
-  string venue_coordinate_long = 11;
-  google.protobuf.Timestamp created_at = 12;
-  string created_by = 13;
-  google.protobuf.Timestamp updated_at = 14;
-  string updated_by = 15;
+  float selling_price = 5;
+  google.protobuf.Timestamp start_date = 6;
+  string category_name = 7;
+  string region_name = 8;
+  string venue_name = 9;
+  string venue_entrance_gate = 10;
+  string venue_coordinate_lat = 11;
+  string venue_coordinate_long = 12;
+  string status = 13;
+  string buyer_id = 14;
+  google.protobuf.Timestamp created_at = 15;
+  string created_by = 16;
+  google.protobuf.Timestamp updated_at = 17;
+  string updated_by = 18;
 }
 
 // TicketList definition
@@ -37,5 +40,5 @@ service TicketService {
   rpc CreateTicket(Ticket) returns (Ticket);
   rpc UpdateTicket(Ticket) returns (Ticket);
   rpc DeleteTicket(Ticket) returns (google.protobuf.Empty);
-  rpc GetTickets(google.protobuf.Empty) returns (TicketList);
+  rpc GetTickets(Ticket) returns (TicketList);
 }

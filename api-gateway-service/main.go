@@ -15,9 +15,14 @@ import (
 	"github.com/nafisalfiani/p3-final-project/lib/configreader"
 	"github.com/nafisalfiani/p3-final-project/lib/log"
 	"github.com/nafisalfiani/p3-final-project/lib/parser"
-	"github.com/nafisalfiani/p3-final-project/lib/security"
 )
 
+// @contact.name Nafisa Alfiani
+// @contact.email nafisa.alfiani.ica@gmail.com
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	log.DefaultLogger().Info(context.Background(), "starting server...")
 
@@ -44,9 +49,6 @@ func main() {
 	// init validator
 	validator := validator.New(validator.WithRequiredStructEnabled())
 
-	// init security
-	sec := security.Init(logger, config.Security)
-
 	// init broker
 	broker, err := broker.Init(config.Broker, logger, parser.JSONParser())
 	if err != nil {
@@ -61,7 +63,7 @@ func main() {
 	dom := domain.Init(logger)
 
 	// init uc
-	uc := usecase.Init(config.Usecase, logger, sec, validator, dom)
+	uc := usecase.Init(config.Usecase, logger, auth, validator, dom)
 	defer uc.CloseAllConns()
 
 	// init and run scheduler

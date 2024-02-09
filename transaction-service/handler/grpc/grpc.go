@@ -6,19 +6,15 @@ import (
 	"net"
 
 	"github.com/go-playground/validator/v10"
-	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	jwtAuth "github.com/nafisalfiani/p3-final-project/lib/auth"
-	"github.com/nafisalfiani/p3-final-project/lib/header"
 	"github.com/nafisalfiani/p3-final-project/lib/log"
 	"github.com/nafisalfiani/p3-final-project/lib/security"
 	"github.com/nafisalfiani/p3-final-project/transaction-service/handler/grpc/transaction"
 	"github.com/nafisalfiani/p3-final-project/transaction-service/handler/grpc/wallet"
 	"github.com/nafisalfiani/p3-final-project/transaction-service/usecase"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/grpc/status"
 )
 
 type Interface interface {
@@ -45,7 +41,7 @@ func Init(cfg Config, log log.Interface, uc *usecase.Usecases, sec security.Inte
 	}
 
 	s := grpc.NewServer(
-		grpc.UnaryInterceptor(grpc_auth.UnaryServerInterceptor(srv.authFunc)),
+	// grpc.UnaryInterceptor(grpc_auth.UnaryServerInterceptor(srv.authFunc)),
 	)
 
 	transaction.RegisterTransactionServiceServer(s, transaction.Init(log, uc.Transaction))
@@ -81,16 +77,16 @@ func WithInsecure() grpc.DialOption {
 	return grpc.WithTransportCredentials(insecure.NewCredentials())
 }
 
-func (g *grpcServer) authFunc(ctx context.Context) (context.Context, error) {
-	token, err := grpc_auth.AuthFromMD(ctx, "bearer")
-	if err != nil {
-		return nil, status.Error(codes.Unauthenticated, "token not provided")
-	}
+// func (g *grpcServer) authFunc(ctx context.Context) (context.Context, error) {
+// 	token, err := grpc_auth.AuthFromMD(ctx, "bearer")
+// 	if err != nil {
+// 		return nil, status.Error(codes.Unauthenticated, "token not provided")
+// 	}
 
-	user, err := g.auth.VerifyToken(ctx, token)
-	if err != nil {
-		return nil, status.Error(codes.Unauthenticated, err.Error())
-	}
+// 	user, err := g.auth.VerifyToken(ctx, token)
+// 	if err != nil {
+// 		return nil, status.Error(codes.Unauthenticated, err.Error())
+// 	}
 
-	return g.auth.SetUserAuthInfo(ctx, user, &jwtAuth.Token{TokenType: header.AuthorizationBearer, AccessToken: token}), nil
-}
+// 	return g.auth.SetUserAuthInfo(ctx, user, &jwtAuth.Token{TokenType: header.AuthorizationBearer, AccessToken: token}), nil
+// }

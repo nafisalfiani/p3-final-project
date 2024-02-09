@@ -159,17 +159,35 @@ func (r *rest) Register() {
 	authv1.GET("/verify-email/:id", r.VerifyEmail)
 	authv1.POST("/login", r.Login)
 
+	// webhooks
+	webv1 := r.http.Group("/webhook/v1", commonPublicMiddlewares...)
+	webv1.POST("/transaction", r.UpdatePaymentStatus)
+
 	commonPrivateMiddlewares := append(commonPublicMiddlewares, r.VerifyUser)
 
 	// register private middlewares
 	v1 := r.http.Group("/api/v1", commonPrivateMiddlewares...)
 
-	// account-service
-	v1.GET("/user")
-
 	// product-service
+	v1.GET("/category", r.ListCategory)
+	v1.GET("/region", r.ListRegion)
+	v1.GET("/ticket", r.ListOpenTicket)
+	v1.GET("/ticket-sold", r.ListSoldTicketByMe)
+	v1.GET("/ticket-bought", r.ListBoughtTicketByMe)
+	v1.POST("/ticket", r.RegisterTicketForSale)
+	v1.PUT("/ticket/:id", r.UpdateTicketInfo)
+	v1.DELETE("/ticket/:id", r.TakeDownTicket)
+
+	v1.GET("/wishlist", r.ListWishlist)
+	v1.GET("/wishlist/:id", r.GetWishlistSubscriber)
+	v1.POST("/wishlist", r.SubscribeToWishlist)
+	v1.DELETE("/wishlist", r.UnsubscribeFromWishlist)
 
 	// transaction-service
+	v1.GET("/transaction", r.ListTransaction)
+	v1.POST("/transaction", r.CreateTransaction)
+	v1.PUT("/transaction", r.UpdateTransaction)
+	v1.GET("/wallet", r.GetWallet)
 
 	// scheduler
 	v1.POST("/admin/scheduler/trigger", r.TriggerScheduler)

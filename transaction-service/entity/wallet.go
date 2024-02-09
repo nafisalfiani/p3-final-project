@@ -1,9 +1,13 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Wallet struct {
-	Id        string          `json:"id" gorm:"primaryKey"`
+	Id        uuid.UUID       `gorm:"type:uuid;default:gen_random_uuid()"`
 	UserId    string          `json:"user_id" gorm:"not null"`
 	Balance   float32         `json:"balance" gorm:"not null"`
 	History   []WalletHistory `json:"history" gorm:"not null"`
@@ -14,7 +18,7 @@ type Wallet struct {
 }
 
 type WalletHistory struct {
-	Id              string    `json:"id" gorm:"primaryKey"`
+	Id              uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
 	WalletId        string    `json:"wallet_id" gorm:"not null"`
 	PreviousBalance float32   `json:"previous_balance" gorm:"not null"`
 	CurrentBalance  float32   `json:"current_balance" gorm:"not null"`

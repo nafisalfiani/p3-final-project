@@ -18,7 +18,7 @@ import (
 )
 
 type Interface interface {
-	List(ctx context.Context) ([]entity.Ticket, error)
+	List(ctx context.Context, filter entity.Ticket) ([]entity.Ticket, error)
 	Get(ctx context.Context, filter entity.Ticket) (entity.Ticket, error)
 	Create(ctx context.Context, ticket entity.Ticket) (entity.Ticket, error)
 	Update(ctx context.Context, ticket entity.Ticket) (entity.Ticket, error)
@@ -44,9 +44,24 @@ func Init(logger log.Interface, json parser.JSONInterface, db *mongo.Collection,
 }
 
 // List returns list of tickets
-func (t *ticket) List(ctx context.Context) ([]entity.Ticket, error) {
+func (t *ticket) List(ctx context.Context, in entity.Ticket) ([]entity.Ticket, error) {
 	tickets := []entity.Ticket{}
-	cursor, err := t.collection.Find(ctx, bson.M{})
+	filter := bson.M{}
+
+	t.logger.Debug(ctx, in)
+	if in.BuyerId != "" {
+		filter["buyer_id"] = in.BuyerId
+	}
+
+	if in.SellerId != "" {
+		filter["seller_id"] = in.SellerId
+	}
+
+	if in.Status != "" {
+		filter["status"] = in.Status
+	}
+
+	cursor, err := t.collection.Find(ctx, filter)
 	if err != nil {
 		return tickets, errors.NewWithCode(codes.CodeNoSQLRead, err.Error())
 	}
@@ -63,37 +78,19 @@ func (t *ticket) List(ctx context.Context) ([]entity.Ticket, error) {
 func (t *ticket) Get(ctx context.Context, req entity.Ticket) (entity.Ticket, error) {
 	var ticket entity.Ticket
 	var filter any
-	var cacheKey string
 
 	t.logger.Debug(ctx, req)
 	switch {
 	case !req.Id.IsZero():
 		filter = bson.M{"_id": req.Id}
-		cacheKey = fmt.Sprintf("id:%v", req.Id)
 	case req.Title != "":
 		filter = bson.M{"title": req.Title}
-		cacheKey = fmt.Sprintf("title:%v", req.Title)
 	}
-
-	// get from cache, if no error and ticket found, direct return
-	ticket, err := t.getCache(ctx, fmt.Sprintf(entity.CacheKeyTicket, cacheKey))
-	if err == nil && !ticket.Id.IsZero() {
-		t.logger.Info(ctx, fmt.Sprintf("cache for %v found", cacheKey))
-		return ticket, nil
-	} else if err != nil {
-		t.logger.Error(ctx, err)
-	}
-	t.logger.Info(ctx, fmt.Sprintf("cache for %v no found", cacheKey))
 
 	if err := t.collection.FindOne(ctx, filter).Decode(&ticket); err != nil && err == mongo.ErrNoDocuments {
 		return ticket, errors.NewWithCode(codes.CodeNoSQLRecordDoesNotExist, err.Error())
 	} else if err != nil {
 		return ticket, errors.NewWithCode(codes.CodeNoSQLRead, err.Error())
-	}
-
-	// set ticket cache if result found from mongo
-	if err := t.setCache(ctx, cacheKey, ticket); err != nil {
-		t.logger.Error(ctx, fmt.Sprintf("cache for ticket:%v failed to be set", req.Id.Hex()))
 	}
 
 	return ticket, nil

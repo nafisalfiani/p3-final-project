@@ -3,6 +3,7 @@ package transaction
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/nafisalfiani/p3-final-project/lib/codes"
 	"github.com/nafisalfiani/p3-final-project/lib/errors"
 	"github.com/nafisalfiani/p3-final-project/transaction-service/entity"
@@ -41,9 +42,6 @@ func (w *transaction) List(ctx context.Context) ([]entity.Transaction, error) {
 // Get returns specific transaction
 func (w *transaction) Get(ctx context.Context, filter entity.Transaction) (entity.Transaction, error) {
 	transaction := entity.Transaction{}
-	// cond := w.db.Where("1 = 1")
-
-	// if filter.
 
 	err := w.db.First(&transaction).Error
 	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
@@ -78,7 +76,12 @@ func (w *transaction) Update(ctx context.Context, transaction entity.Transaction
 
 // Delete deletes existing data
 func (w *transaction) Delete(ctx context.Context, id string) error {
-	if err := w.db.Delete(&entity.Transaction{Id: id}).Error; err != nil {
+	uid, err := uuid.Parse(id)
+	if err != nil {
+		return err
+	}
+
+	if err := w.db.Delete(&entity.Transaction{Id: uid}).Error; err != nil {
 		return errors.NewWithCode(codes.CodeSQLDelete, err.Error())
 	}
 
